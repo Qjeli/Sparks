@@ -24,7 +24,7 @@ void set_info(s21_decimal value, info *info_vall) {
         info_vall->move = info_vall->move | (bit << j);
         j ++;
     }
-    if(value.bits[3]>>32 == 1) {
+    if( (value.bits[3] >> 31) & 1 == 1) {
          // если этот символ 0 то и менять ничего не надо 
         info_vall->sing = 1; 
     }
