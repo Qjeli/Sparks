@@ -262,7 +262,30 @@ void s21_decl_to_null(s21_decimal *decl) {
   }
 }
 
+// Считаем количество знаков в src
+int count_src(float src, char* str_src) {
+    int count_str = 0, k = 1;
+    char str[100];
 
+    snprintf(str, sizeof(str), "%f", src);
+
+    for (int i = (int) strlen(str) - 1; i >= 0; i--) {
+        if (str[i] == '0' && k == 1) {
+            str[i] = '\0';
+            continue;
+        } else {
+            k = -1;
+        }
+        if (str[i] == '.') {
+            break;
+        }
+        count_str++;
+    }
+
+    strncpy(str_src, str, strlen(str) + 1);
+
+    return count_str;
+}
 
 /// | - - - - - - - - - comparison - - - - - - - - - - - |
 
@@ -488,7 +511,39 @@ int s21_from_int_to_decimal(int src, s21_decimal *dst) {
     return 0;
 }
 
+int s21_from_float_to_decimal(float src, s21_decimal *dst) {
+  int flag = 0;  // флаг ошибки
+  s21_decimal ten;  //  умножение на 10
+  s21_decimal add;  //  для простого сложения
+  int rank = 0;
+  if(fabsf(src) < 1e-28 && fabsf(src) < 0) {  //  условие ошибки
+    flag = 1;
+  }
 
+  char str_src[1000];
+  int count = count_src(src, str_src), is_overfill = 0; //  count_src копирует переносит массив оттуда в str_src
+
+  s21_from_int_to_decimal(10, &ten);
+
+  for (size_t i = 0; i < strlen(str_src); i++) {  //  проходим по элементам и проверяем условие
+        if (str_src[i] != '.' && str_src[i] != '-') {
+            s21_from_int_to_decimal(str_src[i] - '0', &add);
+            memset(&(dst->bits), 0, sizeof(dst->bits));
+            for (int j = 0; j < 96; j++) {  //  второй цикл конвертирования
+              int bit1 = s21_getBit(*dst, j);
+              int bit2 = s21_getBit(add, j);
+
+              s21_setBit(dst, j, bit1 ^ bit2 ^ rank);  //  ^ - правда когда один из битов 1, но не оба
+            }
+            is_overfill = s21_mul(*dst, ten, dst);  //  не знаю что делать дальше
+        }
+    }
+
+    s21_setSign(dst, src < 0);
+    s21_setScale(dst, count_str);
+
+  return flag;
+}
 
 int s21_from_decimal_to_int(s21_decimal src, int *dst) {
    int flag = 0;
