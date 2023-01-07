@@ -3,7 +3,7 @@
 /// | ~ ~ ~ ~ ~ ~ ~ ~ functions helpers ~ ~ ~ ~ ~ ~ ~ ~ ~|
 
 int s21_getBit(s21_decimal d, int i) {
-    unsigned int mask = 1u << (i % 32); 
+    unsigned int mask = 1u << (i % 32); // u значит беззнаковая 1
 return d.bits [i % 32] & mask; // тут скорее всего ощибка. вероятнее всего надо писать i/32
 }
 
