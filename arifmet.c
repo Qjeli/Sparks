@@ -43,11 +43,11 @@ void s21_init_decimal(s21_decimal *dec) {
 }
 
 
-int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2, int err_num) {
+int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2, int err_num) { // выравнивание по степени
   int res = err_num;
   s21_decimal *left = NULL;
   s21_decimal *right = NULL;
-  s21_decimal remainder = {{0, 0, 0, 0}};
+  s21_decimal remainder = {0}; // остаток
   if (s21_getScale(*value_1) > s21_getScale(*value_2)) {
     left = value_1;
     right = value_2;
@@ -62,7 +62,7 @@ int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2, int err_n
     s21_setSign(*right, 0);
     while (s21_getScale(*right) != s21_getScale(*right) &&
            s21_last_bit(*right) < 93 && s21_getScale(*right) <= 28) {
-      int res = OK; // предпочла чтоб вместо ок писали 0
+      res = OK; // предпочла чтоб вместо ок писали 0
       int scale_small = s21_getScale(*right);
       s21_setScale(right, 0);
       res = s21_mul(ten, *right, right);
@@ -351,16 +351,16 @@ int s21_is_not_equal(s21_decimal value1, s21_decimal value2) {
 
 
 int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-
     int res = OK; int flag = 0;
-    int buf;
+    //int buf;
     s21_init_decimal(result);
     s21_scale_equalization(&value_1, &value_2, 0);
-    int left = s21_getBit(value_1, 0);
-    int right = s21_getBit(value_2, 0);
-    if(left != right) {
-        if(left == 1) flag = 1;
-        if(right == 1) flag = 2;
+    int left = s21_getBit(value_1, 0); // полуаем самый первый бит левого числа
+    int right = s21_getBit(value_2, 0); // тож самое но для правого
+    if(left != right) { // если они не равны. Хз в чем прикол правда
+        if(left == 1) flag = 1; 
+        if(right == 1) flag = 1;  // понимаю что проверка на бесконечность, но чел, почему это проверяем только если не равны друг другу
+        // чувство что это все же для вычитания 
     }
     if(flag == 0) {
         int tmp = 0;
@@ -370,25 +370,18 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
             int tmp_res = tmp1 + tmp2 + tmp;
             if(tmp_res == 0) {
                 s21_setBit(&result, i, 0);
-                buf = 0;
+                tmp = 0;
             } else if (tmp_res == 1) {
                 s21_setBit(result, i, 1);
                 tmp = 0;
-            } else if(tmp_res == 2) {
+            } else if(tmp_res == 2 || tmp_res == 3) {
                 if(i == 95) {
                     res = 1;
                     break;
                 }
-            s21_setBit(result, i, 0);
-            tmp = 1;
-        } else if (tmp_res == 3) {
-            if(i == 95) {
-                res = 1;
-                break;
+                s21_setBit(result, i, tmp_res == 2? 0:1);
+                tmp = 1;
             }
-            tmp = 1;
-            s21_setBit(result, i, 1);
-        }
         }
         s21_setScale(result, s21_getScale(value_1));
         if(left == 1) {
@@ -405,7 +398,7 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
         res = 2;
     if (res != 0) s21_init_decimal(result);
     return res;
-    }
+}
 
 
 int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
@@ -467,7 +460,7 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 }
 
 
-int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) { // нет проверки на флаги
     int flag = 0;
     int sign_control = 0;
     s21_decimal tmp;
@@ -494,7 +487,16 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     return flag;
 }
 
+int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+    int flag = 0; 
+    if(value_2.bits[0] == 0 & value_2.bits[1] == 0 & value_2.bits[2] == 0) {
+        flag = division_by_0;
+    }
+    if(flag == 0){
 
+    }
+    return flag;
+}
 
 
 
