@@ -59,8 +59,8 @@ int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2, int err_n
   if (s21_getScale(*value_1) != s21_getScale(*value_2)) { // получаем то на сколько сдвиг
     int sign1 = s21_getSign(*left), sign2 = s21_getSign(*right); // получаем знак
     s21_decimal ten = {{10, 0, 0, 0}};  // что это и зачем оно
-    s21_setSign(*left, 0);
-    s21_setSign(*right, 0);
+    s21_setSign(left, 0);
+    s21_setSign(right, 0);
     while (s21_getScale(*left) != s21_getScale(*right) && // change right on left
            s21_last_bit(*right) < 93 && s21_getScale(*right) <= 28) {
       res = OK; // предпочла б чтоб вместо ок писали 0
@@ -84,8 +84,8 @@ int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2, int err_n
       if (res != 0) break;
       s21_setScale(left, scale_big - 1);
     }
-    s21_setSign(*left, sign1);
-    s21_setSign(*right, sign2);
+    s21_setSign(left, sign1);
+    s21_setSign(right, sign2);
   }
   return res;
 }
@@ -149,8 +149,8 @@ int s21_integer_division(s21_decimal value_1, s21_decimal value_2, s21_decimal *
   s21_bits_copy(value_1, &tmp_div);
   s21_setScale(&tmp_div, 0);
   s21_setScale(&value_2, 0);
-  s21_setSign(tmp_div, 0);
-  s21_setSign(value_2, 0);
+  s21_setSign(&tmp_div, 0);
+  s21_setSign(&value_2, 0);
   if (value_2.bits[0] == 0 && value_2.bits[1] == 0 && value_2.bits[2] == 0) {
     res = s21_NAN;
   } else if ((value_1.bits[0] == 0 && value_1.bits[1] == 0 &&
@@ -180,7 +180,7 @@ int s21_integer_division(s21_decimal value_1, s21_decimal value_2, s21_decimal *
     for (int i = 95; i > index_res; i--) {
       s21_getBit(tmp_res, i) == 1 ? s21_setBit(result, i - index_res - 1, 1) : s21_setBit(result, i - index_res - 1, 0);
     }
-    (sign1 != sign2) ? s21_setSign(*result, 1) : NULL;
+    (sign1 != sign2) ? s21_setSign(&result, 1) : NULL;
     s21_setScale(result, scale_value1);
     s21_shift_right(&tmp_del, 1);
     *remainder = tmp_del;
