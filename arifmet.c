@@ -373,7 +373,7 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
     }
 
     s21_setSign(dst, src < 0);  // removed & from dst
-    s21_setScale(dst, count_src);
+    s21_setScale(dst, count_src(src, str_src));
 
   return flag;
 }
