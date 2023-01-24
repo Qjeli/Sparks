@@ -43,7 +43,6 @@ void s21_init_decimal(s21_decimal *dec) {
   dec->bits[0] = dec->bits[1] = dec->bits[2] = dec->bits[3] = 0;
 }
 
-
 int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2, int err_num) { // выравнивание по степени
   int res = err_num;
   s21_decimal *left = NULL;
@@ -90,13 +89,11 @@ int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2, int err_n
   return res;
 }
 
-
 void s21_decl_to_null(s21_decimal *decl) {
   for (int i = 0; i < 128; ++i) {
     s21_setBit(decl, i, 0);
   }
 }
-
 
 void s21_bits_copy(s21_decimal value, s21_decimal *dest) {
   for (int i = 0; i < 4; ++i) {
@@ -104,6 +101,15 @@ void s21_bits_copy(s21_decimal value, s21_decimal *dest) {
   }
 }
 
+// dafuq?
+/*
+void s21_bits_copy(s21_decimal tmp_div, s21_decimal *tmp_mod){
+  int discharge = s21_last_bit(tmp_div) - s21_last_bit(*tmp_mod); 
+  for (int i = 95; i > discharge - 1; i--) {
+    s21_set_bit(tmp_mod, i, 0);
+  }
+}
+*/
 
 void s21_setting(s21_decimal tmp_buf, s21_decimal *tmp_del, s21_decimal *tmp_mod, int *discharge) {
   s21_bits_copy(tmp_buf, tmp_del);
@@ -112,7 +118,6 @@ void s21_setting(s21_decimal tmp_buf, s21_decimal *tmp_del, s21_decimal *tmp_mod
   s21_setBit(tmp_mod, *discharge - 1, 0);
   (*discharge)--;
 }
-
 
 int s21_shift_left(s21_decimal *value, int num) {
   int res = OK;
@@ -134,7 +139,21 @@ int s21_shift_left(s21_decimal *value, int num) {
   return res;
 }
 
-
+int s21_shift_right(s21_decimal *first, int shift) {
+  int res_val = 1;
+  for (int i = 0; i < shift; i++) {
+    int value_32bit = s21_getBit(*first, 32);
+    int value_64bit = s21_getBit(*first, 64);
+    first->bits[0] >>= 1;
+    first->bits[1] >>= 1;
+    first->bits[2] >>= 1;
+    value_32bit ? s21_set_bit(first, 31, 1) : s21_set_bit(first, 31, 0);
+    value_64bit ? s21_set_bit(first, 63, 1) : s21_set_bit(first, 63, 0);
+    s21_set_bit(first, 95, 0);
+    res_val = 0;
+  }
+  return res_val;
+}
 
 int s21_integer_division(s21_decimal value_1, s21_decimal value_2, s21_decimal *result, s21_decimal *remainder, int error_code) {
     s21_decimal tmp_div = {0};
@@ -210,42 +229,9 @@ void s21_first_prepare(s21_decimal tmp_div, s21_decimal *tmp_mod, s21_decimal *t
   }
 }
 
-
-void s21_bits_copy(s21_decimal tmp_div, s21_decimal *tmp_mod){
-  int discharge = s21_last_bit(tmp_div) - s21_last_bit(*tmp_mod); 
-  for (int i = 95; i > discharge - 1; i--) {
-    s21_set_bit(tmp_mod, i, 0);
-  }
-}
-
-
 int s21_last_bit(s21_decimal value) {
   int last_bit = 95;
   for (; last_bit >= 0 && s21_getBit(value, last_bit) == 0; last_bit--) {
   }
   return last_bit;
-}
-
-
-int s21_shift_right(s21_decimal *first, int shift) {
-  int res_val = 1;
-  for (int i = 0; i < shift; i++) {
-    int value_32bit = s21_getBit(*first, 32);
-    int value_64bit = s21_getBit(*first, 64);
-    first->bits[0] >>= 1;
-    first->bits[1] >>= 1;
-    first->bits[2] >>= 1;
-    value_32bit ? s21_set_bit(first, 31, 1) : s21_set_bit(first, 31, 0);
-    value_64bit ? s21_set_bit(first, 63, 1) : s21_set_bit(first, 63, 0);
-    s21_set_bit(first, 95, 0);
-    res_val = 0;
-  }
-  return res_val;
-}
-
-
-void s21_decl_to_null(s21_decimal *decl) {
-  for (int i = 0; i < 128; ++i) {
-    s21_set_bit(decl, i, 0);
-  }
 }

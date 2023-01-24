@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-//
+// our common
 
 #define BITS_SIZE 4
 
@@ -39,7 +39,7 @@ void s21_setSign(s21_decimal *d, int sign) {
     s21_setBit(d, 127, sign);
 }
 
-//
+// our converters
 
 int s21_from_int_to_decimal(int src, s21_decimal *dst) {
     memset(&(dst->bits), 0, sizeof(dst->bits));  //  filling an array of bits with zeros, with the size of bits
@@ -77,12 +77,15 @@ int s21_from_decimal_to_int(s21_decimal src, int *dst) {
     return flag;
 }
 
-//
+// mine
 
 int s21_negate(s21_decimal value, s21_decimal *result) {
-    for (int i = 0; i < 4; i++) {
-        result->bits[i] = value.bits[i];
-    }
+    // for (int i = 0; i < 4; i++) {
+    //     result->bits[i] = value.bits[i];
+    // }
+    
+    *result = value; // shorter way
+
     s21_setSign(result, !s21_getSign(value));
     return 0;
 } // works, but the conversion seems odd
