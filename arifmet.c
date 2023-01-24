@@ -40,7 +40,7 @@ int s21_is_greater(s21_decimal value_1, s21_decimal value_2) {
   int res = OK;
   s21_check_scale(&value_1, &value_2);
   int num1 = 0, num2 = 0;
-  int sign1 = s21_get_sign(&value_1), sign2 = s21_get_sign(&value_2);
+  int sign1 = s21_getSign(value_1), sign2 = s21_getSign(value_2);  // removed & from value_1 and value_2
   for (int i = 95; i >= 0; i--) {
     num1 = s21_getBit(value_1, i);
     num2 = s21_getBit(value_2, i);
@@ -62,6 +62,27 @@ int s21_is_greater(s21_decimal value_1, s21_decimal value_2) {
   return s21_is_equal(value_1, value_2) ? 0 : res;
 }
 
+// duplication
+ /*
+int s21_is_greater(s21_decimal num1, s21_decimal num2) {  // возвращает 0 если первый больше второго
+  int result = -1;
+  int sign_num1 = s21_getSign(num1);
+  int sign_num2 = s21_getSign(num2);
+  if (sign_num1 == sign_num2 && sign_num1 == 0) {  // оба положительные
+    result = s21_is_greater_num(num1, num2, result);
+  } else if (sign_num1 == 1 &&
+             sign_num2 == 0) {  // num1 - отрицательный, num2 - положительный
+    result = 1;
+  } else if (sign_num1 == 0 &&
+             sign_num2 == 1) {  // num1 - положительный, num2 - отрицательный
+    result = 0;
+  } else if (sign_num1 == sign_num2 && sign_num1 == 1) {  // оба отрицательный
+      result = !s21_is_greater_num(num1, num2, result);
+    }
+  return result;
+}
+*/
+
 int s21_is_greater_or_equal(s21_decimal value1, s21_decimal value2) {
   return (s21_is_greater(value1, value2) || s21_is_equal(value1, value2));
 }
@@ -69,7 +90,7 @@ int s21_is_greater_or_equal(s21_decimal value1, s21_decimal value2) {
 int s21_is_equal(s21_decimal value1, s21_decimal value2) {
   s21_check_scale(&value1, &value2);
   int res = 1;
-  int sign1 = s21_get_sign(&value1), sign2 = s21_get_sign(&value2);
+  int sign1 = s21_getSign(value1), sign2 = s21_getSign(value2);  // removed & from value_1 and value_2
   for (int i = 95; i >= 0; i--) {
     if (s21_getBit(value1, i) != s21_getBit(value2, i)) {
       res = 0;
@@ -109,17 +130,17 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
             int tmp2 = s21_getBit(value_2, i);
             int tmp_res = tmp1 + tmp2 + tmp;
             if(tmp_res == 0) {
-                s21_setBit(*result, i, 0);
+                s21_setBit(result, i, 0);  // removed * from result
                 tmp = 0;
             } else if (tmp_res == 1) {
-                s21_setBit(*result, i, 1);
+                s21_setBit(result, i, 1);  // removed * from result
                 tmp = 0;
             } else if(tmp_res == 2 || tmp_res == 3) {
                 if(i == 95) {
                     res = 1;
                     break;
                 }
-                s21_setBit(*result, i, tmp_res == 2? 0:1);
+                s21_setBit(result, i, tmp_res == 2? 0:1);  // removed * from result
                 tmp = 1;
             }
         }
@@ -164,31 +185,31 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
         int tmp2 = s21_getBit(value_2, i);
         int tmp_res = tmp1 - tmp2;
         if (tmp_res == 0) {
-          s21_setBit(*result, i, 0);
+          s21_setBit(result, i, 0);  // removed * from result
           continue;
         } else if (tmp_res == 1) {
-          s21_setBit(*result, i, 1);
+          s21_setBit(result, i, 1);  // removed * from result
         } else if (tmp_res == -1) {
           int n = i + 1;
           while (s21_getBit(value_1, n) != 1) {
-            s21_setBit(value_1, n, 1);
+            s21_setBit(&value_1, n, 1);  // added & to value_1
             n++;
           }
-          s21_setBit(value_1, n, 0);
-          s21_setBit(*result, i, 1);
+          s21_setBit(&value_1, n, 0);  // added & to value_1
+          s21_setBit(result, i, 1);  // removed * from result
         }
       }
       s21_setScale(result, s21_getScale(value_1));
     } else if (left == 1) {
-      s21_setBit(value_1, 127, 0);
-      s21_setBit(value_2, 127, 0);
+      s21_setBit(&value_1, 127, 0);  // added & to value_1
+      s21_setBit(&value_2, 127, 0);  // added & to value_2
       res = s21_sub(value_2, value_1, result);
     }
   } else if (flag == 1) {
-    s21_setBit(value_2, 127, 0);
+    s21_setBit(&value_2, 127, 0);  // added & to value_2
     res = s21_add(value_1, value_2, result);
   } else if (flag == 2) {
-    s21_setBit(value_2, 127, 1);
+    s21_setBit(&value_2, 127, 1);  // added & to value_2
     res = s21_add(value_1, value_2, result);
   }
   if (s21_getScale(*result) > 28 ||
@@ -211,7 +232,7 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) { // 
     }
     s21_setSign(&value_1, 0);
     s21_setSign(&value_2, 0);
-    scale_equalization(&value_1, &value_2);
+    s21_scale_equalization(&value_1, &value_2, 0);
     s21_bits_copy(tmp, &value_1);
 
     int b = 5;
@@ -250,24 +271,6 @@ int s21_is_greater_num(s21_decimal num1,s21_decimal  num2, int result){
   return result;
 }
 
-int s21_is_greater(s21_decimal num1, s21_decimal num2) {  // возвращает 0 если первый больше второго
-  int result = -1;
-  int sign_num1 = s21_getSign(num1);
-  int sign_num2 = s21_getSign(num2);
-  if (sign_num1 == sign_num2 && sign_num1 == 0) {  // оба положительные
-    result = s21_is_greater_num(num1, num2, result);
-  } else if (sign_num1 == 1 &&
-             sign_num2 == 0) {  // num1 - отрицательный, num2 - положительный
-    result = 1;
-  } else if (sign_num1 == 0 &&
-             sign_num2 == 1) {  // num1 - положительный, num2 - отрицательный
-    result = 0;
-  } else if (sign_num1 == sign_num2 && sign_num1 == 1) {  // оба отрицательный
-      result = !s21_is_greater_num(num1, num2, result);
-    }
-  return result;
-}
-
 
 //деление
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
@@ -292,7 +295,7 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   int i = 0;
   while (!s21_is_greater_or_equal(val_1, val_2)) {
     s21_sub(val_1, val_2, &val_1);  // непосредственно производим вычитание
-    s21_setBit(*result, i, 1); 
+    s21_setBit(result, i, 1);  // removed * from result
     i++;
   }
 
@@ -363,13 +366,13 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
               int bit1 = s21_getBit(*dst, j);
               int bit2 = s21_getBit(add, j);
 
-              s21_setBit(*dst, j, bit1 ^ bit2 ^ rank);  //  ^ - правда когда один из битов 1, но не оба
+              s21_setBit(dst, j, bit1 ^ bit2 ^ rank);  //  ^ - правда когда один из битов 1, но не оба // removed * from dst
             }
             is_overfill = s21_mul(*dst, ten, dst);  //  не знаю что делать дальше
         }
     }
 
-    s21_setSign(&dst, src < 0);
+    s21_setSign(dst, src < 0);  // removed & from dst
     s21_setScale(dst, count_src);
 
   return flag;

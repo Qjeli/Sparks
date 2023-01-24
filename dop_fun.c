@@ -24,10 +24,18 @@ int s21_getScale(const s21_decimal d) {
 }
 
 void s21_setScale(s21_decimal *d, int scale) {
-    for(int i = s21_START_INFO + 16; i < s21_START_INFO + 24; i++) {
+    for(int i = s21_START_INFO + 16; i < s21_START_INFO + 24; i++) {  // TRY 23 if there is an error
         s21_setBit(d, i, scale & 1);  // возможно будет ошибка
         scale >> 1;
     }
+}
+
+void s21_check_scale(s21_decimal *value1, s21_decimal *value2) {
+  int scale_value1 = s21_getScale(*value1);
+  int scale_value2 = s21_getScale(*value2);
+  if (scale_value1 != scale_value2) {
+    s21_scale_equalization(value1, value2, 0);
+  }
 }
 
 int s21_getSign(const s21_decimal d) {
@@ -36,7 +44,7 @@ int s21_getSign(const s21_decimal d) {
 }
 
 void s21_setSign( s21_decimal *d, int sign) {
-    s21_setBit(&d, 127, sign);
+    s21_setBit(d, 127, sign); // removed & from d
 }
 
 void s21_init_decimal(s21_decimal *dec) {
@@ -147,9 +155,9 @@ int s21_shift_right(s21_decimal *first, int shift) {
     first->bits[0] >>= 1;
     first->bits[1] >>= 1;
     first->bits[2] >>= 1;
-    value_32bit ? s21_set_bit(first, 31, 1) : s21_set_bit(first, 31, 0);
-    value_64bit ? s21_set_bit(first, 63, 1) : s21_set_bit(first, 63, 0);
-    s21_set_bit(first, 95, 0);
+    value_32bit ? s21_setBit(first, 31, 1) : s21_setBit(first, 31, 0);
+    value_64bit ? s21_setBit(first, 63, 1) : s21_setBit(first, 63, 0);
+    s21_setBit(first, 95, 0);
     res_val = 0;
   }
   return res_val;
@@ -199,7 +207,7 @@ int s21_integer_division(s21_decimal value_1, s21_decimal value_2, s21_decimal *
     for (int i = 95; i > index_res; i--) {
       s21_getBit(tmp_res, i) == 1 ? s21_setBit(result, i - index_res - 1, 1) : s21_setBit(result, i - index_res - 1, 0);
     }
-    (sign1 != sign2) ? s21_setSign(&result, 1) : NULL;
+    (sign1 != sign2) ? s21_setSign(result, 1) : NULL; // removed & from result
     s21_setScale(result, scale_value1);
     s21_shift_right(&tmp_del, 1);
     *remainder = tmp_del;
@@ -208,7 +216,7 @@ int s21_integer_division(s21_decimal value_1, s21_decimal value_2, s21_decimal *
   return res;
 }
 
-// не используется
+// не используется - Nastya
 void s21_first_prepare(s21_decimal tmp_div, s21_decimal *tmp_mod, s21_decimal *tmp_del, s21_decimal value_2, int *discharge) {
   *discharge = 0;
   int shift = s21_last_bit(tmp_div) - s21_last_bit(value_2);
@@ -225,7 +233,20 @@ void s21_first_prepare(s21_decimal tmp_div, s21_decimal *tmp_mod, s21_decimal *t
   s21_bits_copy(tmp_div, tmp_mod);
   *discharge = s21_last_bit(tmp_div) - s21_last_bit(*tmp_del);
   for (int i = 95; i > *discharge - 1; i--) {
-    s21_set_bit(tmp_mod, i, 0);
+    s21_setBit(tmp_mod, i, 0);
+  }
+}
+
+void s21_first_step(s21_decimal *tmp_div, s21_decimal value_2,
+                    int *scale_value1, s21_decimal *tmp_res, int *index_res) {
+  s21_decimal ten = {{10, 0, 0, 0}};
+  int x = s21_is_greater_or_equal(*tmp_div, value_2);
+  while (x != 1) {
+    s21_setBit(tmp_res, *index_res, 0);
+    (*index_res)--;
+    s21_mul(*tmp_div, ten, tmp_div);
+    (*scale_value1)++;
+    x = s21_is_greater_or_equal(*tmp_div, value_2);
   }
 }
 

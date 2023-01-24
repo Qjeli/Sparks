@@ -24,9 +24,10 @@ typedef struct
 #define division_by_0 3
 
 int s21_getBit(s21_decimal d, int i); //получения 1 или 0 для каждого бита
-void s21_setBit(s21_decimal d, int i, int value); // определенной позиции переменной 1
+void s21_setBit(s21_decimal *d, int i, int value); // определенной позиции переменной 1
 int s21_getScale(const s21_decimal d); //Возвращает масштаб данных, разрешенных в этом свойстве
 void s21_setScale(s21_decimal *d, int scale); //для увеличение или уменьшение масштаба
+void s21_check_scale(s21_decimal *value1, s21_decimal *value2);
 int s21_getSign(const s21_decimal d); //заменa  параметра
 void s21_setSign( s21_decimal *d, int sign);
 
@@ -37,7 +38,8 @@ void s21_decl_to_null(s21_decimal *decl);
 
 void s21_setting(s21_decimal tmp_buf, s21_decimal *tmp_del, s21_decimal *tmp_mod, int *discharge);
 void s21_first_prepare(s21_decimal tmp_div, s21_decimal *tmp_mod,s21_decimal *tmp_del, s21_decimal value_2, int *discharge);
-
+void s21_first_step(s21_decimal *tmp_div, s21_decimal value_2,
+                    int *scale_value1, s21_decimal *tmp_res, int *index_res);
 
 int s21_last_bit(s21_decimal value);
 void s21_bits_copy(s21_decimal value, s21_decimal *dest);
