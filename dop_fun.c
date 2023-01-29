@@ -109,7 +109,7 @@ void s21_bits_copy(s21_decimal value, s21_decimal *dest) {
   }
 }
 
-// dafuq?
+// duplicated function
 /*
 void s21_bits_copy(s21_decimal tmp_div, s21_decimal *tmp_mod){
   int discharge = s21_last_bit(tmp_div) - s21_last_bit(*tmp_mod); 
@@ -118,6 +118,13 @@ void s21_bits_copy(s21_decimal tmp_div, s21_decimal *tmp_mod){
   }
 }
 */
+
+int s21_last_bit(s21_decimal value) {
+  int last_bit = 95;
+  for (; last_bit >= 0 && s21_getBit(value, last_bit) == 0; last_bit--) {
+  }
+  return last_bit;
+}
 
 void s21_setting(s21_decimal tmp_buf, s21_decimal *tmp_del, s21_decimal *tmp_mod, int *discharge) {
   s21_bits_copy(tmp_buf, tmp_del);
@@ -248,11 +255,4 @@ void s21_first_step(s21_decimal *tmp_div, s21_decimal value_2,
     (*scale_value1)++;
     x = s21_is_greater_or_equal(*tmp_div, value_2);
   }
-}
-
-int s21_last_bit(s21_decimal value) {
-  int last_bit = 95;
-  for (; last_bit >= 0 && s21_getBit(value, last_bit) == 0; last_bit--) {
-  }
-  return last_bit;
 }
