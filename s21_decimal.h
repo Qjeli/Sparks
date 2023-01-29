@@ -16,16 +16,19 @@ typedef struct
     int bits[BITS_SIZE];
 } s21_decimal;
 
+#define OK 0
 #define s21_START_INFO 96
 #define s21_NAN 3
-#define TOO_FEW_OR_NEG_INF = 2
+#define TOO_MUCH_OR_INF 1
+#define TOO_FEW_OR_NEG_INF  2
+#define division_by_0 3
 
 int s21_getBit(s21_decimal d, int i); //получения 1 или 0 для каждого бита
-void s21_setBit(s21_decimal d, int i, int value); // определенной позиции переменной 1
+void s21_setBit(s21_decimal *d, int i, int value); // определенной позиции переменной 1
 int s21_getScale(const s21_decimal d); //Возвращает масштаб данных, разрешенных в этом свойстве
-void s21_setScale(s21_decimal d, int scale); //для увеличение или уменьшение масштаба
+void s21_setScale(s21_decimal *d, int scale); //для увеличение или уменьшение масштаба
 int s21_getSign(const s21_decimal d); //заменa  параметра
-void s21_setSign( s21_decimal d, int sign);
+void s21_setSign( s21_decimal *d, int sign);
 
 void s21_init_decimal(s21_decimal *dec);
 int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2, int err_num);
@@ -67,8 +70,8 @@ int s21_from_decimal_to_int(s21_decimal src, int *dst);
 int s21_from_decimal_to_float(s21_decimal src, float *dst);
 
 //  bit[0] is small 32 bits
-//  bit[1] is medium 32 bits
-//  bit[2] is high 32 bits
+//  bit[1] is medium 32 bits 64
+//  bit[2] is high 32 bits 96
 //  bit[3]
 //  Биты от 0 до 15, младшее слово, не используются и должны быть равны нулю.
 //  Биты с 16 по 23 должны содержать показатель степени от 0 до 28, который указывает степень 10 для разделения целого числа.
