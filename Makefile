@@ -1,5 +1,5 @@
-
 CC = gcc
+CC_FLAGS = -Wall -Wextra -Werror -std=c11
 NAME = s21_decimal.a test
 TEST_LIBS = -lcheck -lrt -lm -lpthread -lsubunit
 OBJECTS = s21_another.o s21_arithmetic.o s21_comparison.o s21_converters.o s21_decimal.o
