@@ -10,6 +10,21 @@ void test_neg() {
     printf("%d\n", res);
 }
 
+void conversion() {
+  float f, z;
+  s21_decimal a = {{1, 0, 0, 0}};
+  s21_decimal b = {{2, 0, 0, 0}};
+  s21_decimal res = {0};
+  s21_from_float_to_decimal(0.542 , &a);
+  s21_from_float_to_decimal(0.6 , &b);
+  // s21_setSign(&b, 0);
+  // s21_setSign(&a, 1);
+  // s21_add(a, b, &res);
+  s21_from_decimal_to_float(a, &f);
+  s21_from_decimal_to_float(b, &z);
+  printf("%u %u %u %u %d\n%lf %lf\n", res.bits[0], res.bits[1],res.bits[2],res.bits[3],s21_getSign(res), f, z);
+}
+
 void test_trunc() {
     float value = 0;
     float res = 0;
@@ -56,6 +71,6 @@ void s21_truncate_1() {
 }
 
 int main() {
-    s21_truncate_test();
+    test_trunc();
     return 0;
 }
