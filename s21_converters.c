@@ -92,7 +92,7 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
   if(fabsl(src) < 1e-28 && fabsl(src) < 0) {  //  условие ошибки
     flag = 1;
   }
-  printf("%u\n ", dst->bits[0]);
+  //printf("%u\n ", dst->bits[0]); // was not commented
   char str_src[1000];
   int count = count_src(src, str_src), is_full = 0; //  count_src копирует переносит массив оттуда в str_src
 
@@ -117,6 +117,40 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
   return flag;
 }
 
+/*
+// old, just to test truncate
+int s21_from_float_to_decimal(float src, s21_decimal *dst) {
+  int flag = 0;  // флаг ошибки
+  s21_decimal ten;  //  умножение на 10
+  s21_decimal add;  //  для простого сложения
+  int rank = 0;
+  if(fabsf(src) < 1e-28 && fabsf(src) < 0) {  //  условие ошибки
+    flag = 1;
+  }
+  char str_src[1000];
+  int count = count_src(src, str_src), is_full = 0; //  count_src копирует переносит массив оттуда в str_src
+  s21_from_int_to_decimal(10, &ten);
+  for (size_t i = 0; i < strlen(str_src); i++) {  //  проходим по элементам и проверяем условие
+        if (str_src[i] != '.' && str_src[i] != '-') {
+            s21_from_int_to_decimal(str_src[i] - '0', &add);
+            memset(&(dst->bits), 0, sizeof(dst->bits));
+            for (int j = 0; j < 96; j++) {  //  второй цикл конвертирования
+              int bit1 = s21_getBit(*dst, j);
+              int bit2 = s21_getBit(add, j);
+              s21_setBit(dst, j, bit1 ^ bit2 ^ rank);  //  ^ - правда когда один из битов 1, но не оба // removed * from dst
+            }
+            is_full = s21_mul(*dst, ten, dst);  //  не знаю что делать дальше
+        }
+    }
+    if (is_full) {
+        s21_div(*dst, ten, dst);
+    }
+    s21_setSign(dst, src < 0);
+    s21_setScale(dst, count);
+  return flag;
+}
+*/
+
 int s21_from_decimal_to_int(s21_decimal src, int *dst) {
    int flag = 0;
     int data = 0;
@@ -128,7 +162,6 @@ int s21_from_decimal_to_int(s21_decimal src, int *dst) {
                 flag = 1;
             }
         }
-
     }
 
     if (!flag) {

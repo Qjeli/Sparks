@@ -9,12 +9,16 @@ SOURSES = s21_another.c s21_arithmetic.c s21_comparison.c s21_converters.c s21_d
 
 all: $(NAME)
 
-test: s21_decimal_test.o s21_decimal.a $(OBJECTS)
-	$(CC) $(OBJECTS) s21_decimal_test.o s21_decimal.a $(TEST_LIBS) -o test
+fulltest: s21_decimal_fulltest.o s21_decimal.a $(OBJECTS)
+	$(CC) $(OBJECTS) s21_decimal_fulltest.o s21_decimal.a $(TEST_LIBS) -o fulltest
+	./fulltest
+
+test: s21_decimal_test.c $(SOURSES)
+	$(CC) $(CC_FLAGS) s21_decimal_test.c $(SOURSES) -lm -o test
 	./test
 
-main: s21_another.o s21_arithmetic.o s21_comparison.o s21_converters.o s21_decimal.o
-	$(CC) s21_another.o s21_arithmetic.o s21_comparison.o s21_converters.o s21_decimal.o -o main
+main: $(OBJECTS)
+	$(CC) $(OBJECTS) -o main
 	./main
 
 s21_decimal.o: s21_decimal.c
@@ -32,11 +36,14 @@ s21_comparison.o: s21_comparison.c
 s21_converters.o: s21_converters.c
 	$(CC) $(CC_FLAGS) -c s21_converters.c -g
 
-s21_decimal_test.o: s21_decimal_test.c	
+s21_decimal_fulltest.o: s21_decimal_fulltest.c
+	$(CC) $(CC_FLAGS) -c  s21_decimal_fulltest.c
+
+s21_decimal_test.o: s21_decimal_test.c
 	$(CC) $(CC_FLAGS) -c  s21_decimal_test.c
 
 gcov_report: s21_decimal.a 
-	$(CC) $(CC_FLAGS) --coverage s21_decimal_test.c s21_another.c s21_arithmetic.c s21_comparison.c s21_converters.c s21_decimal.c  s21_decimal.a $(TEST_LIBS) -o gcov_test
+	$(CC) $(CC_FLAGS) --coverage s21_decimal_test.c $(SOURSES)  s21_decimal.a $(TEST_LIBS) -o gcov_test
 	chmod +x *
 	./gcov_test
 	lcov -t "gcov_test" -o gcov_test.info --no-external -c -d .
@@ -52,12 +59,12 @@ check: s21_decimal.a
 	$(CC) test.o s21_decimal.a $(TEST_LIBS) -o test
 	CK_FORK=no leaks --atExit -- ./test
 
-s21_decimal.a: s21_another.o s21_arithmetic.o s21_comparison.o s21_converters.o s21_decimal.o
+s21_decimal.a: $(OBJECTS)
 	$(CC) -c $(SOURSES)
 	ar rcs s21_decimal.a $(OBJECTS)
 
 clean:
-	rm -rf *.o test s21_decimal.a s21_decimal_test.c.gcov s21_decimal.c.gcov s21_decimal_test.gc* s21_decimal.gc* report gcov_report.info CPPLINT.cfg a.out gcov_test*
+	rm -rf *.o fulltest test s21_decimal.a s21_decimal_test.c.gcov s21_decimal.c.gcov s21_decimal_test.gc* s21_decimal.gc* report gcov_report.info CPPLINT.cfg a.out gcov_test*
 
 lo:
 	for i in `seq 100 $(OP)`;	do ./test; done;
