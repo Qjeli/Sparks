@@ -1,5 +1,5 @@
 CC = gcc
-CC_FLAGS = -Wall -Wextra -std=c11
+CC_FLAGS = -Wall -Wextra -Werror -std=c11
 NAME = s21_decimal.a test
 TEST_LIBS = -lcheck -lrt -lm -lpthread -lsubunit
 OBJECTS = s21_another.o s21_arithmetic.o s21_comparison.o s21_converters.o s21_decimal.o
@@ -33,7 +33,7 @@ s21_converters.o: s21_converters.c
 	$(CC) $(CC_FLAGS) -c s21_converters.c -g
 
 s21_decimal_test.o: s21_decimal_test.c	
-	$(CC) $(CC_FLAGS) -c s21_decimal_test.c
+	$(CC) $(CC_FLAGS) -c  s21_decimal_test.c
 
 gcov_report: s21_decimal.a 
 	$(CC) $(CC_FLAGS) --coverage s21_decimal_test.c s21_another.c s21_arithmetic.c s21_comparison.c s21_converters.c s21_decimal.c  s21_decimal.a $(TEST_LIBS) -o gcov_test

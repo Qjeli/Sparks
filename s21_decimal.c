@@ -47,7 +47,7 @@ int s21_getSign(const s21_decimal d) {
 }
 
 void s21_setSign( s21_decimal *d, int sign) {
-  s21_setBit(d, 127, sign); // removed & from d
+  s21_setBit(d, 127, sign);
 }
 
 void s21_init_decimal(s21_decimal *dec) {
@@ -112,7 +112,7 @@ void s21_bits_copy(s21_decimal value, s21_decimal *dest) {
   }
 }
 
-// !!! duplicated function
+// дублируется, мб это более актуально. надо проверить
 /*
 void s21_bits_copy(s21_decimal tmp_div, s21_decimal *tmp_mod){
   int discharge = s21_last_bit(tmp_div) - s21_last_bit(*tmp_mod); 
@@ -217,7 +217,7 @@ int s21_integer_division(s21_decimal value_1, s21_decimal value_2, s21_decimal *
     for (int i = 95; i > index_res; i--) {
       s21_getBit(tmp_res, i) == 1 ? s21_setBit(result, i - index_res - 1, 1) : s21_setBit(result, i - index_res - 1, 0);
     }
-    (sign1 != sign2) ? s21_setSign(result, 1) : NULL; // removed & from result
+    (sign1 != sign2) ? s21_setSign(result, 1) : NULL;
     s21_setScale(result, scale_value1);
     s21_shift_right(&tmp_del, 1);
     *remainder = tmp_del;
@@ -226,7 +226,6 @@ int s21_integer_division(s21_decimal value_1, s21_decimal value_2, s21_decimal *
   return res;
 }
 
-// не используется - Nastya
 void s21_first_prepare(s21_decimal tmp_div, s21_decimal *tmp_mod, s21_decimal *tmp_del, s21_decimal value_2, int *discharge) {
   *discharge = 0;
   int shift = s21_last_bit(tmp_div) - s21_last_bit(value_2);

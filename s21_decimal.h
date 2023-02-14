@@ -11,8 +11,7 @@
 
 #define BITS_SIZE 4
 
-typedef struct 
-{
+typedef struct {
     int bits[BITS_SIZE];
 } s21_decimal;
 
@@ -33,21 +32,30 @@ void s21_setSign( s21_decimal *d, int sign);
 
 void s21_init_decimal(s21_decimal *dec);
 int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2, int err_num);
-int s21_integer_division(s21_decimal value_1, s21_decimal value_2, s21_decimal *result, s21_decimal *remainder, int error_code);
+
 void s21_decl_to_null(s21_decimal *decl);
-
-void s21_setting(s21_decimal tmp_buf, s21_decimal *tmp_del, s21_decimal *tmp_mod, int *discharge);
-void s21_first_prepare(s21_decimal tmp_div, s21_decimal *tmp_mod,s21_decimal *tmp_del, s21_decimal value_2, int *discharge);
-void s21_first_step(s21_decimal *tmp_div, s21_decimal value_2,
-                    int *scale_value1, s21_decimal *tmp_res, int *index_res);
-
-int s21_last_bit(s21_decimal value);
 void s21_bits_copy(s21_decimal value, s21_decimal *dest);
-
+int s21_last_bit(s21_decimal value);
+void s21_setting(s21_decimal tmp_buf, s21_decimal *tmp_del, s21_decimal *tmp_mod, int *discharge);
 int s21_shift_left(s21_decimal *value, int num);
 int s21_shift_right(s21_decimal *first, int shift);
 
-void s21_decl_to_null(s21_decimal *decl);
+int s21_integer_division(s21_decimal value_1, s21_decimal value_2, s21_decimal *result, s21_decimal *remainder, int error_code);
+void s21_first_prepare(s21_decimal tmp_div, s21_decimal *tmp_mod,s21_decimal *tmp_del, s21_decimal value_2, int *discharge);
+void s21_first_step(s21_decimal *tmp_div, s21_decimal value_2,
+                    int *scale_value1, s21_decimal *tmp_res, int *index_res);
+int count_src(float src, char* str_src);
+
+int add(s21_decimal left, s21_decimal right, s21_decimal *result); // вспомогательная функция для сложения
+void inverse(s21_decimal *value);
+int is_Null(s21_decimal value);
+int check(s21_decimal val_1, s21_decimal val_2, s21_decimal *result);
+
+int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result); //сложение
+int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result); //вычитание
+int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result); //умножение
+int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result); //деление
+int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result); //остаток от деления
 
 int s21_is_less(s21_decimal value1, s21_decimal value2); // Меньше
 int s21_is_less_or_equal(s21_decimal, s21_decimal); // Меньше или равно
@@ -56,21 +64,19 @@ int s21_is_greater_or_equal(s21_decimal value1, s21_decimal value2); // Боль
 int s21_is_equal(s21_decimal value1, s21_decimal value2); // Равно
 int s21_is_not_equal(s21_decimal, s21_decimal); //Не равно
 
-int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result); //сложение
-int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result); //вычитание
-int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result); //умножение
-int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result); //деление
-int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result); //остаток от деления
+void s21_simple_sub(s21_decimal value1, s21_decimal value2, s21_decimal *result);
+int s21_simple_add(s21_decimal value1, s21_decimal value2, s21_decimal *result);
+s21_decimal s21_simple_div(s21_decimal value1, s21_decimal value2, s21_decimal *result);
 
 int s21_from_int_to_decimal(int src, s21_decimal *dst);
 int s21_from_float_to_decimal(float src, s21_decimal *dst);
 int s21_from_decimal_to_int(s21_decimal src, int *dst);
 int s21_from_decimal_to_float(s21_decimal src, float *dst);
-int count_src(float src, char* str_src);
 
 int s21_negate(s21_decimal value, s21_decimal *result);
 int s21_truncate(s21_decimal value, s21_decimal *result);
 int s21_round(s21_decimal value, s21_decimal *result);
+int s21_floor(s21_decimal value, s21_decimal *result);
 
 //  bit[0] is small 32 bits
 //  bit[1] is medium 32 bits 64

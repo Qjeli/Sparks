@@ -14,7 +14,7 @@ int s21_is_greater(s21_decimal value_1, s21_decimal value_2) {
   int res = OK;
   s21_check_scale(&value_1, &value_2);
   int num1 = 0, num2 = 0;
-  int sign1 = s21_getSign(value_1), sign2 = s21_getSign(value_2);  // removed & from value_1 and value_2
+  int sign1 = s21_getSign(value_1), sign2 = s21_getSign(value_2);
   for (int i = 95; i >= 0; i--) {
     num1 = s21_getBit(value_1, i);
     num2 = s21_getBit(value_2, i);
@@ -36,7 +36,7 @@ int s21_is_greater(s21_decimal value_1, s21_decimal value_2) {
   return s21_is_equal(value_1, value_2) ? 0 : res;
 }
 
-// duplication
+// дублируется, мб это более актуально? надо проверить:
 /*
 int s21_is_greater(s21_decimal num1, s21_decimal num2) {  // возвращает 0 если первый больше второго
   int result = -1;
@@ -87,7 +87,7 @@ int s21_is_greater_or_equal(s21_decimal value1, s21_decimal value2) {
 int s21_is_equal(s21_decimal value1, s21_decimal value2) {
   s21_check_scale(&value1, &value2);
   int res = 1;
-  int sign1 = s21_getSign(value1), sign2 = s21_getSign(value2);  // removed & from value_1 and value_2
+  int sign1 = s21_getSign(value1), sign2 = s21_getSign(value2);
   for (int i = 95; i >= 0; i--) {
     if (s21_getBit(value1, i) != s21_getBit(value2, i)) {
       res = 0;

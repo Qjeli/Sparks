@@ -1,7 +1,5 @@
 #include "s21_decimal.h"
 
-// -------------------------------------------------
-
 // src: dec_4
 int s21_negate(s21_decimal value, s21_decimal *result) {
     // for (int i = 0; i < 4; i++) {
@@ -13,7 +11,7 @@ int s21_negate(s21_decimal value, s21_decimal *result) {
 
     s21_setSign(result, !s21_getSign(value));
     return 0;
-}
+} // need to add error check?
 
 // src: grishakir
 int s21_truncate(s21_decimal value, s21_decimal *result) {

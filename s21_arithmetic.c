@@ -1,6 +1,5 @@
 #include "s21_decimal.h"
 
-
 int add(s21_decimal left, s21_decimal right, s21_decimal *result){
   int res = 0;
   int tmp = 0;
@@ -77,14 +76,35 @@ void inverse(s21_decimal *value){
   s21_setSign(value,(s21_getSign(*value)+tmp)%2);
 }
 
+// used in s21_mul
+int is_Null(s21_decimal value){
+  int res = 0; // is not null
+  if(value.bits[0] == 0 && value.bits[1] == 0 && value.bits[2] == 0){
+    res = 1;
+  }
+  return res;
+}
+
+// used in s21_div
+int check(s21_decimal val_1, s21_decimal val_2, s21_decimal *result) { 
+  int flag = 0; 
+  if (val_2.bits[0] == 0 && val_2.bits[1] == 0 && val_2.bits[2] == 0) { // div on 0 
+    flag = 3; 
+  } else if (val_1.bits[0] == 0 && val_1.bits[1] == 0 && val_1.bits[2] == 0) { 
+      s21_init_decimal(result); 
+      flag = 4; 
+  } 
+  return flag; 
+}
 
 /// | - - - - - - - - - ariphmetic - - - - - - - - - - - |
 int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   // считаем что одинаковый размер
-  int res = OK; int flag = 0;
+  int res = OK; 
   s21_decimal right = value_1;
   s21_decimal left = value_2;
   s21_init_decimal(result);
+  // s21_scale_equalization(&right, &left, 0);
   if (s21_getSign(right) == s21_getSign(left)) {
      res = add(left, right, result);
   }
@@ -97,18 +117,18 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
       inverse(&left);
       res = add(left, right, result);
     }
-
   }
-  
   return res;
 }
+
 int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-     int res = OK; int flag = 0;
+  int res = OK;
   s21_decimal left = value_1;
   s21_decimal right = value_2;
   s21_init_decimal(result); 
+  // s21_scale_equalization(&right, &left, 0);
   int singRight = s21_getSign(right);
-  int singLeft = s21_getSign(left);
+  //int singLeft = s21_getSign(left);
   s21_setSign(&right, singRight = 1 - singRight);
   if(s21_getSign(left) == s21_getSign(right)){
     s21_setSign(&right, 0);
@@ -116,20 +136,13 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     s21_setSign(result, singRight); // установка знака 
   }
   s21_add(left, right, result); // сложение 
-}
-
-
-int is_Null(s21_decimal value){
-  int res = 0; // is not null
-  if(value.bits[0] == 0 && value.bits[1] == 0 && value.bits[2] == 0){
-    res = 1;
-  }
   return res;
 }
+
 // умножение
 int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) { // нет проверки на флаги
     int flag = 0;
-    int sign_control = 0;
+    //int sign_control = 0;
     s21_decimal tmp;
     s21_decl_to_null(&tmp);
     s21_decl_to_null(result);
@@ -144,9 +157,6 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) { // 
     int set_sgn = s21_getSign(left) ^ s21_getSign(right);
     s21_setSign(result, set_sgn);
 
-
-
-      
     //    if (s21_getSign(value_1) != s21_getSign(value_2)) {
     //   sign_control = 1;
     // }
@@ -169,17 +179,6 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) { // 
     
     return flag;
 }
-
-int check(s21_decimal val_1, s21_decimal val_2, s21_decimal *result) { 
-  int flag = 0; 
-  if (val_2.bits[0] == 0 && val_2.bits[1] == 0 && val_2.bits[2] == 0) { // div on 0 
-    flag = 3; 
-  } else if (val_1.bits[0] == 0 && val_1.bits[1] == 0 && val_1.bits[2] == 0) { 
-      s21_init_decimal(result); 
-      flag = 4; 
-  } 
-  return flag; 
-} 
 
 //деление 
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) { 
