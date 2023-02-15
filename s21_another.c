@@ -1,15 +1,18 @@
 #include "s21_decimal.h"
 
 // src: dec_4
+// works mostly fine but does not pass some tests
+// need to add error check?
 int s21_negate(s21_decimal value, s21_decimal *result) {
     *result = value;
     s21_setSign(result, !s21_getSign(value));
     return 0;
-} // works mostly fine but does not pass some tests
-// need to add error check?
+}
 
 /*
 // src: grishakir
+// passes half of the tests, does not work properly
+// need to add error check
 int s21_truncate(s21_decimal value, s21_decimal *result) {
     s21_bits_copy(value, result);
 
@@ -18,12 +21,10 @@ int s21_truncate(s21_decimal value, s21_decimal *result) {
     }
     s21_setScale(result, 0);
     return 0;
-} // passes half of the tests, does not work properly
-// need to add error check
+} 
 */
 
-// helper functions from padmemur
-
+// -- helper functions from padmemur --
 int int_get_bit(unsigned int number, int byte) {
     return (number & 1 << byte) ? 1 : 0;
 }
@@ -63,8 +64,10 @@ int div_ten(s21_decimal* number) {
     s21_setScale(number, scale_of_number);
     return buffer;
 }
+// -------------
 
 // src: padmemur
+// passes most of the tests, there is a problem with conversion
 int s21_truncate(s21_decimal value, s21_decimal* result) {
     int res = 0;
     if (result) {
@@ -82,9 +85,12 @@ int s21_truncate(s21_decimal value, s21_decimal* result) {
         res = 1;
     }
     return res;
-} // passes most of the tests, seems like there is a problem with conversion
+}
 
+/*
 // src: grishakir
+// does not work, tests from rynortheast are wrong
+// need to add error check
 int s21_round(s21_decimal value, s21_decimal *result) {
     s21_decimal one = {{1, 0, 0, 0}};
     s21_bits_copy(value, result);
@@ -102,10 +108,45 @@ int s21_round(s21_decimal value, s21_decimal *result) {
         s21_setScale(result, 0);
     }
     return 0;
-} // passes most of the tests, need to check in main
-// need to add error check
+}
+*/
+
+// src: padmemur
+// passes more than half of the tests, there is still a problem with conversion
+// try to test in main after the conversion is fixed
+int s21_round(s21_decimal value, s21_decimal *result) {
+    int res = 0;
+    if (result) {
+        int is_less_then_zero = 0;
+        s21_decimal tmp_value;
+        s21_decimal half;
+        s21_decimal diff;
+        s21_decimal one = {{1, 0, 0, 0}};
+        s21_from_float_to_decimal(0.5, &half);
+        s21_decimal zero = {{0, 0, 0, 0}};
+        if (s21_is_less(value, zero)) {
+            is_less_then_zero = 1;
+            s21_negate(value, &value);
+        }
+        s21_truncate(value, &tmp_value);
+        s21_sub(value, tmp_value, &diff);
+        if (s21_is_greater_or_equal(diff, half)) {
+            s21_add(tmp_value, one, result);
+        } else {
+            *result = tmp_value;
+        }
+        if (is_less_then_zero) {
+            s21_negate(*result, result);
+        }
+    } else {
+        res = 1;
+    }
+    return res;
+}
 
 // src: grishakir
+// passes more than half of the tests, need to check in main
+/*
 int s21_floor(s21_decimal value, s21_decimal *result) {
     int flag = 0;
     int flag_not_error = 0;
@@ -124,6 +165,22 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
         flag = s21_truncate(*result, result);
     }
     return flag;
-} // passes half of the tests, need to check in main
-// need to add more tests
-// need to add error check
+}
+*/
+
+// src: padmemur
+// passes more than half of the tests, need to check in main
+int s21_floor(s21_decimal value, s21_decimal *result) {
+    int res = 0;
+    if (result) {
+        s21_decimal zero = {{0, 0, 0, 0}};
+        s21_decimal one = {{1, 0, 0, 0}};
+        s21_truncate(value, result);
+        if (s21_is_less(value, zero)) {
+            s21_sub(*result, one, result);
+        }
+    } else {
+        res = 1;
+    }
+    return res;
+}
