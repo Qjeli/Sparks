@@ -1,6 +1,6 @@
 #include "s21_decimal.h"
 
-void test_neg() {
+void test_neg_int() {
     int value_int = 0, res = 0;
     s21_decimal value_dec, value_dec_neg;
     scanf("%d", &value_int);
@@ -10,19 +10,32 @@ void test_neg() {
     printf("%d\n", res);
 }
 
+void test_neg_float() {
+    float value_int = 0, res = 0;
+    s21_decimal value_dec, value_dec_neg;
+    scanf("%f", &value_int);
+    s21_from_float_to_decimal(value_int, &value_dec);
+    s21_negate(value_dec, &value_dec_neg);
+    s21_from_decimal_to_float(value_dec_neg, &res);
+    printf("%f\n", res);
+}
+
 void conversion() {
-  float f, z;
-  s21_decimal a = {{1, 0, 0, 0}};
-  s21_decimal b = {{2, 0, 0, 0}};
+float f, z, result;
+  s21_decimal a = {{5, 0, 0, 0}};
+  s21_decimal b = {{3, 0, 0, 0}};
   s21_decimal res = {0};
   s21_from_float_to_decimal(0.542 , &a);
   s21_from_float_to_decimal(0.6 , &b);
-  // s21_setSign(&b, 0);
+  // // s21_setSign(&b, 0);
   // s21_setSign(&a, 1);
-  // s21_add(a, b, &res);
+  s21_div(a, b, &res); // 10010000110110 0.9270000
+                       // 10001101001001 0.903333
+  s21_from_decimal_to_float(res, &result);
   s21_from_decimal_to_float(a, &f);
   s21_from_decimal_to_float(b, &z);
-  printf("%u %u %u %u %d\n%lf %lf\n", res.bits[0], res.bits[1],res.bits[2],res.bits[3],s21_getSign(res), f, z);
+  printf("result %f\n", f / z);  // 10001101001001
+  printf("resDec %u %u %u %u \nsign: %d\nfromDecToFloat %lf\nres %lf %lf\n", res.bits[0], res.bits[1],res.bits[2],res.bits[3],s21_getSign(res),result, f, z);
 }
 
 void test_trunc() {
@@ -33,7 +46,7 @@ void test_trunc() {
     scanf("%f", &value);
     s21_from_float_to_decimal(value, &value_dec);
     s21_truncate(value_dec, &value_dec_tru);
-    s21_setScale(&value_dec_tru, 1);
+    //s21_setScale(&value_dec_tru, 1);
     s21_from_decimal_to_float(value_dec_tru, &res);
     printf("%f\n", res);
 }
@@ -71,6 +84,6 @@ void s21_truncate_1() {
 }
 
 int main() {
-    test_trunc();
+    test_neg_float();
     return 0;
 }

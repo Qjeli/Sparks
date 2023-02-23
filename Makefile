@@ -4,13 +4,15 @@ NAME = s21_decimal.a test
 TEST_LIBS = -lcheck -lrt -lm -lpthread -lsubunit
 OBJECTS = s21_another.o s21_arithmetic.o s21_comparison.o s21_converters.o s21_decimal.o
 SOURSES = s21_another.c s21_arithmetic.c s21_comparison.c s21_converters.c s21_decimal.c
+#TEST_OBJECTS = test_another.o test_arithmetic.o test_comparison.o test_converters.o test_decimal.o
+TEST_OBJECT = test_another.o
 
 .PHONY: all clean test s21_decimal.a gcov_report
 
 all: $(NAME)
 
-fulltest: s21_decimal_fulltest.o s21_decimal.a $(OBJECTS)
-	$(CC) $(OBJECTS) s21_decimal_fulltest.o s21_decimal.a $(TEST_LIBS) -o fulltest
+fulltest: $(TEST_OBJECT) s21_decimal.a $(OBJECTS)
+	$(CC) $(OBJECTS) $(TEST_OBJECT) s21_decimal.a $(TEST_LIBS) -o fulltest
 	./fulltest
 
 test: s21_decimal_test.c $(SOURSES)
@@ -36,14 +38,26 @@ s21_comparison.o: s21_comparison.c
 s21_converters.o: s21_converters.c
 	$(CC) $(CC_FLAGS) -c s21_converters.c -g
 
-s21_decimal_fulltest.o: s21_decimal_fulltest.c
-	$(CC) $(CC_FLAGS) -c  s21_decimal_fulltest.c
+test_another.o: test_another.c
+	$(CC) $(CC_FLAGS) -c test_another.c
+
+test_arithmetic.o: test_arithmetic.c
+	$(CC) $(CC_FLAGS) -c test_arithmetic.c
+
+test_comparison.o: test_comparison.c
+	$(CC) $(CC_FLAGS) -c test_comparison.c
+
+test_converters.o: test_converters.c
+	$(CC) $(CC_FLAGS) -c test_converters.c
+
+test_decimal.o: test_decimal.c
+	$(CC) $(CC_FLAGS) -c test_decimal.c
 
 s21_decimal_test.o: s21_decimal_test.c
-	$(CC) $(CC_FLAGS) -c  s21_decimal_test.c
+	$(CC) $(CC_FLAGS) -c s21_decimal_test.c
 
 gcov_report: s21_decimal.a 
-	$(CC) $(CC_FLAGS) --coverage s21_decimal_test.c $(SOURSES)  s21_decimal.a $(TEST_LIBS) -o gcov_test
+	$(CC) $(CC_FLAGS) --coverage s21_decimal_test.c $(SOURSES) s21_decimal.a $(TEST_LIBS) -o gcov_test
 	chmod +x *
 	./gcov_test
 	lcov -t "gcov_test" -o gcov_test.info --no-external -c -d .
