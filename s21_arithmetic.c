@@ -104,7 +104,7 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   s21_decimal right = value_1;
   s21_decimal left = value_2;
   s21_init_decimal(result);
-  // s21_scale_equalization(&right, &left, 0);
+  s21_scale_equalization(&right, &left, 0);
   if (s21_getSign(right) == s21_getSign(left)) {
      res = add(left, right, result);
   }
@@ -142,20 +142,24 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 // умножение
 int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) { // нет проверки на флаги
     int flag = 0;
-    //int sign_control = 0;
+    
     s21_decimal tmp;
     s21_decl_to_null(&tmp);
     s21_decl_to_null(result);
     s21_decimal left = value_1;
     s21_decimal right = value_2;
+   // s21_scale_equalization(&left, &right, 0);
     if(!is_Null(left) && !is_Null(right)){
       for (int i = 0; i < 96; i++) {
-        if (s21_getBit(right, i) == 1)
-                s21_add(*result, left, result);
-            s21_shift_left(&left,1);
+        if (s21_getBit(right, i) == 1){
+          s21_add(*result, left, result);
+          // printf("%u ", s21_getScale(*result));
+        }
+        s21_shift_left(&left,1);
       }
     int set_sgn = s21_getSign(left) ^ s21_getSign(right);
     s21_setSign(result, set_sgn);
+    s21_setScale(result, s21_getScale(left)+s21_getScale(right));
 
     //    if (s21_getSign(value_1) != s21_getSign(value_2)) {
     //   sign_control = 1;
@@ -164,14 +168,12 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) { // 
     // s21_setSign(&value_2, 0);
     // s21_scale_equalization(&value_1, &value_2, 0);
     // s21_bits_copy(tmp, &value_1);
-
     // int b = 5;
     // for (int i = 0; i < 96 && b > 0; i++) {
     //   if (s21_getBit(value_2, i)) {
     //     flag = s21_add(*result, tmp, result);
     //   }
     //   s21_shift_left(&tmp, 1);
-
     //   s21_from_decimal_to_int(tmp, &b);
     // }
     // s21_setSign(result, sign_control); 
@@ -185,8 +187,8 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   int flag = 0;  
   s21_decimal val_1 = value_1; 
   s21_decimal val_2 = value_2; 
-
-  if (check(value_1, value_2, result) != 0) {
+  s21_scale_equalization(&val_1, &val_2, 0);
+  if (check(value_1, value_2, result) != 0) { // если делит на 0 или 0 делит на что-то 
     // why
   } else { 
     int bit = 0; 
@@ -201,27 +203,37 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     s21_setSign(&val_1, 0);  // зануляем знак 
     s21_setSign(&val_2, 0); 
  
-    s21_decimal val_og = val_2;  // запоминаем первоначальное значение 
+    // s21_decimal val_og = val_2;  // запоминаем первоначальное значение 
  
-    while (!(s21_is_greater_or_equal(val_2, val_1)) && (bit == 0)) {   
+    while ((s21_is_greater_or_equal(val_2, val_1)) && (bit == 0)) {   // меньше и не равен 
+      s21_shift_left(&val_1, 1); // посмотрим как сработает  
+      bit = s21_getBit(val_2, 95); // берем самый последний бит. он должен быть 1 
+    } 
+    while (!(s21_is_greater(val_2, val_1)) && (bit == 0)) {   // меньше и не равен 
       s21_shift_left(&val_2, 1); // посмотрим как сработает  
       bit = s21_getBit(val_2, 95); // берем самый последний бит. он должен быть 1 
     } 
- 
-    while (s21_is_greater_or_equal(val_2, val_og) || 
-          s21_is_greater_or_equal(val_1, val_og)) { 
+     while (val_2.bits[0] > 0) {
+//      printf("%u %u %u %u\n", val_og.bits[0],val_og.bits[1],val_og.bits[2], val_og.bits[3]);
+      printf("%u %u %u %u\n", val_1.bits[0],val_1.bits[1],val_1.bits[2], val_1.bits[3]);
+      printf("%u %u %u %u\n", val_2.bits[0],val_2.bits[1],val_2.bits[2], val_2.bits[3]);
+      printf("promej %u %u %u %u\n", result->bits[0], result->bits[1],result->bits[2], result->bits[3]);
       s21_shift_left(result, 1);
- 
       if (s21_is_greater(val_2, val_1)) { 
-        s21_setBit(result, 0,0);  
-      } else { 
-        s21_sub(val_1, val_2, &val_1);  // непосредственно производим вычитание 
-        s21_setBit(result, 0, 1);
-      } 
-       
-      s21_shift_right(&val_2, 1); 
-    } 
+            s21_setBit(result, 0, 0);  
+          } 
+          else { 
+            s21_sub(val_1, val_2, &val_1);  // непосредственно производим вычитание 
+            s21_setBit(result, 0, 1);
+          } 
+          if(s21_is_greater(val_2, val_1)){
+            s21_shift_right(&val_2, 1); 
+          }
+          
+        } 
   } 
+   s21_setScale(result, s21_getScale(value_1));
+  printf("%u %u %u %u\n", result->bits[0], result->bits[1],result->bits[2], result->bits[3]);
     return flag; 
 } 
  
@@ -231,7 +243,7 @@ int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
    int flag = 0;  
   s21_decimal val_1 = value_1; 
   s21_decimal val_2 = value_2; 
- 
+ s21_scale_equalization(&val_1, &val_2, 0);
   if ((flag = check(val_1, val_2, result)) != 0) {
     // why
   } else { 
