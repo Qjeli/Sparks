@@ -101,9 +101,8 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
   for (size_t i = 0; i < strlen(str_src); i++) {  //  проходим по элементам и проверяем условие
         if (str_src[i] != '.' && str_src[i] != '-') {
             s21_from_int_to_decimal(str_src[i] - '0', &add);
-            s21_simple_add(*dst, add, dst);
-            
             is_full = s21_mul(*dst, ten, dst);
+            s21_simple_add(*dst, add, dst);            
         }
     }
 
