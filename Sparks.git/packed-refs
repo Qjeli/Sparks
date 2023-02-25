@@ -1,0 +1,7 @@
+# pack-refs with: peeled fully-peeled sorted 
+ab31deae79ff816f08777c63abbe3b79444eeea5 refs/heads/Bulat
+1d715d4108c1a631511676f2112f4db50b51e209 refs/heads/Nastya
+b590274f23a9f13b93e69976dc1013030ceb7489 refs/heads/convertors
+bede748327b57204b0b0aec03c3a09677e21fbbb refs/heads/develop
+261f163699d6fa460b8b0557f1757bc13e1b192b refs/heads/main
+433cad42ff87a82040a8679dc7db4bd698875271 refs/pull/1/head
