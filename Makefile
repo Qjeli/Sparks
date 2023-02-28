@@ -1,8 +1,9 @@
 CC = gcc
 CC_FLAGS = -Wall -Wextra -Werror -std=c11
 NAME = s21_decimal.a test
+OS=$(shell uname -s)
 ifeq ($(OS), Linux)
-	TEST_LIBS = -lcheck -lrt -lm -lpthread -lsubunit
+	TEST_LIBS = -lcheck -lm -lpthread -lrt -lsubunit
 else
 	TEST_LIBS = -lcheck -lm -lpthread
 endif
