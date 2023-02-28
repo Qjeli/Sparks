@@ -7,7 +7,6 @@ int add(s21_decimal left, s21_decimal right, s21_decimal *result) {
     int tmp1 = s21_getBit(left, i);
     int tmp2 = s21_getBit(right, i);
     int tmp_res = tmp1 + tmp2 + tmp;
-    // printf("%d ", tmp_res);
     if (tmp_res == 0) {
       s21_setBit(result, i, 0);
       tmp = 0;
@@ -35,7 +34,6 @@ int add(s21_decimal left, s21_decimal right, s21_decimal *result) {
     for (int i = 0; i <= 96; i++) {
       int tmp1 = s21_getBit(*result, i);
       int tmp_res = tmp1 + tmp;
-      // printf("%d ", tmp_res);
       if (tmp_res == 0) {
         s21_setBit(result, i, 0);
         tmp = 0;
@@ -59,7 +57,6 @@ void inverse(s21_decimal *value) {
   for (int i = 0; i <= 96; i++) {
     int tmp1 = s21_getBit(*value, i);
     int tmp_res = tmp1 + tmp;
-    // printf("%d ", tmp_res);
     if (tmp_res == 0) {
       s21_setBit(value, i, 0);
       tmp = 0;

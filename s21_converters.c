@@ -41,13 +41,15 @@ s21_decimal s21_simple_div(s21_decimal value1, s21_decimal value2,
     s21_decl_to_null(result);
   }
 
+  int flag = 0;
+
   s21_decimal ret = {0};
   s21_decimal temp = {0};
   if (s21_is_greater_or_equal(value1, value2)) {
     s21_setBit(&temp, 0, 1);
   }
   if (s21_is_greater(value2, value1)) {
-    while (1) {
+    while (result) {
       s21_decimal copy_val2 = value2;
       while (s21_is_greater_or_equal(value1, copy_val2) &&
              !(s21_getBit(value1, 95) && s21_getBit(copy_val2, 95))) {
@@ -69,11 +71,13 @@ s21_decimal s21_simple_div(s21_decimal value1, s21_decimal value2,
       s21_setBit(&temp, 0, 1);
 
       if (s21_is_less(value1, value2)) {
-        break;
+        flag = 1;
       }
     }
   }
-  ret = value1;
+  if (!flag) {
+    ret = value1;
+  }
   return ret;
 }
 
@@ -99,13 +103,11 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
   if (fabsl(src) < 1e-28 && fabsl(src) < 0) {  //  условие ошибки
     flag = 1;
   }
-  // printf("%u\n ", dst->bits[0]); // was not commented
-  char str_src[9999];
+  char str_src[1024];
   int count = count_src(src, str_src),
       is_full = 0;  //  count_src копирует переносит массив оттуда в str_src
 
   s21_from_int_to_decimal(10, &ten);
-  // printf("%s yy", str_src);
   for (size_t i = 0; i < strlen(str_src);
        i++) {  //  проходим по элементам и проверяем условие
     if (str_src[i] != '.' && str_src[i] != '-') {

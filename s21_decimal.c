@@ -234,7 +234,7 @@ void s21_first_prepare(s21_decimal tmp_div, s21_decimal *tmp_mod,
   *discharge = 0;
   int shift = s21_last_bit(tmp_div) - s21_last_bit(value_2);
   int n = 0;
-  while (1) {
+  while (tmp_mod) {
     s21_bits_copy(tmp_div, tmp_del);
     s21_shift_right(tmp_del, shift - n);
     if (s21_is_greater_or_equal(*tmp_del, value_2) == 1) {

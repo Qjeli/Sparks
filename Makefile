@@ -1,7 +1,11 @@
 CC = gcc
 CC_FLAGS = -Wall -Wextra -Werror -std=c11
 NAME = s21_decimal.a test
-# TEST_LIBS = -lcheck -lrt -lm -lpthread -lsubunit
+ifeq ($(OS), Linux)
+	TEST_LIBS = -lcheck -lrt -lm -lpthread -lsubunit
+else
+	TEST_LIBS = -lcheck -lm -lpthread
+endif
 OBJECTS = s21_another.o s21_arithmetic.o s21_comparison.o s21_converters.o s21_decimal.o
 SOURSES = s21_another.c s21_arithmetic.c s21_comparison.c s21_converters.c s21_decimal.c
 
@@ -33,10 +37,10 @@ s21_converters.o: s21_converters.c
 	$(CC) $(CC_FLAGS) -c s21_converters.c -g
 
 s21_decimal_test.o: s21_decimal_test.c	
-	$(CC) $(CC_FLAGS) -c  s21_decimal_test.c
+	$(CC) $(CC_FLAGS) -c s21_decimal_test.c
 
 gcov_report: s21_decimal.a 
-	$(CC) $(CC_FLAGS) --coverage s21_decimal_test.c s21_another.c s21_arithmetic.c s21_comparison.c s21_converters.c s21_decimal.c  s21_decimal.a $(TEST_LIBS) -o gcov_test
+	$(CC) $(CC_FLAGS) --coverage s21_decimal_test.c s21_another.c s21_arithmetic.c s21_comparison.c s21_converters.c s21_decimal.c s21_decimal.a $(TEST_LIBS) -o gcov_test
 	chmod +x *
 	./gcov_test
 	lcov -t "gcov_test" -o gcov_test.info --no-external -c -d .
@@ -57,7 +61,10 @@ s21_decimal.a: s21_another.o s21_arithmetic.o s21_comparison.o s21_converters.o 
 	ar rcs s21_decimal.a $(OBJECTS)
 
 clean:
-	rm -rf *.o test s21_decimal.a s21_decimal_test.c.gcov s21_decimal.c.gcov s21_decimal_test.gc* s21_decimal.gc* report gcov_report.info CPPLINT.cfg a.out gcov_test*
+	rm -rf *.o s21_decimal.a s21_decimal_test.c.gcov s21_decimal.c.gcov s21_decimal_test.gc* s21_decimal.gc* report gcov_report.info CPPLINT.cfg a.out gcov_test*
+	rm -rf *.gcda
+	rm -rf *.gcno
+	rm -rf test
 
 lo:
 	for i in `seq 100 $(OP)`;	do ./test; done;
