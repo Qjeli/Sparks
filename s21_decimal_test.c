@@ -1819,7 +1819,6 @@ ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
-/*
 START_TEST(s21_round_5) {
 s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
 s21_setScale(&x, 5);
@@ -1830,7 +1829,6 @@ snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2]
 ck_assert_str_eq(res1, res2);
 }
 END_TEST
-*/
 
 START_TEST(s21_round_6) {
 s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
@@ -1887,7 +1885,6 @@ ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
-/*
 START_TEST(s21_round_11) {
 s21_decimal x = {{95008, 0, 0, 0b10000000000000000000000000000000}};
 s21_setScale(&x, 5);
@@ -1898,7 +1895,6 @@ snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2]
 ck_assert_str_eq(res1, res2);
 }
 END_TEST
-*/
 
 START_TEST(s21_round_12) {
 s21_decimal x = {{95008, 0, 0, 0b10000000000000000000000000000000}};
@@ -1988,7 +1984,6 @@ START_TEST(floor_0) {
 }
 END_TEST
 
-/*
 START_TEST(floor_1) {
   s21_decimal val = {{2, 0, 0, ~(UINT_MAX / 2)}};
   s21_decimal res = {0};
@@ -1998,7 +1993,6 @@ START_TEST(floor_1) {
   ck_assert_float_eq(-2, fres);
 }
 END_TEST
-*/
 
 START_TEST(floor_2) {
   s21_decimal val = {{2, 0, 0, ~(UINT_MAX / 2)}};
@@ -2570,13 +2564,13 @@ int main(void) {
   tcase_add_test(tc1_1, s21_round_2);
   tcase_add_test(tc1_1, s21_round_3);
   tcase_add_test(tc1_1, s21_round_4);
-  //tcase_add_test(tc1_1, s21_round_5);
+  tcase_add_test(tc1_1, s21_round_5);
   tcase_add_test(tc1_1, s21_round_6);
   tcase_add_test(tc1_1, s21_round_7);
   tcase_add_test(tc1_1, s21_round_8);
   tcase_add_test(tc1_1, s21_round_9);
   tcase_add_test(tc1_1, s21_round_10);
-  //tcase_add_test(tc1_1, s21_round_11);
+  tcase_add_test(tc1_1, s21_round_11);
   tcase_add_test(tc1_1, s21_round_12);
   tcase_add_test(tc1_1, s21_round_1_n);
   tcase_add_test(tc1_1, s21_round_2_n);
@@ -2584,7 +2578,7 @@ int main(void) {
   tcase_add_test(tc1_1, s21_round_4_n);
   tcase_add_test(tc1_1, s21_round_test);
   tcase_add_test(tc1_1, floor_0);  // floor
-  //tcase_add_test(tc1_1, floor_1);
+  tcase_add_test(tc1_1, floor_1);
   tcase_add_test(tc1_1, floor_2);
   tcase_add_test(tc1_1, floor_3);
   tcase_add_test(tc1_1, s21_floor_1);
