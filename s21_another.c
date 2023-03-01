@@ -1,28 +1,11 @@
 #include "s21_decimal.h"
 
-// src: dec_4
-// works mostly fine but does not pass some tests
 // need to add error check?
 int s21_negate(s21_decimal value, s21_decimal *result) {
     *result = value;
     s21_setSign(result, !s21_getSign(value));
     return 0;
 }
-
-/*
-// src: grishakir
-// passes half of the tests, does not work properly
-// need to add error check
-int s21_truncate(s21_decimal value, s21_decimal *result) {
-    s21_bits_copy(value, result);
-
-    for (int i = 0; i < s21_getScale(value); ++i) {
-        s21_shift_right(result, 3);
-    }
-    s21_setScale(result, 0);
-    return 0;
-} 
-*/
 
 // -- helper functions from padmemur --
 int int_get_bit(unsigned int number, int byte) {
@@ -67,7 +50,7 @@ int div_ten(s21_decimal* number) {
 // -------------
 
 // src: padmemur
-// passes most of the tests, there is a problem with conversion
+// passes most of the tests
 int s21_truncate(s21_decimal value, s21_decimal* result) {
     int res = 0;
     if (result) {
@@ -112,8 +95,8 @@ int s21_round(s21_decimal value, s21_decimal *result) {
 */
 
 // src: padmemur
-// passes more than half of the tests, there is still a problem with conversion
-// try to test in main after the conversion is fixed
+// passes more than half of the tests
+// try to test in main
 int s21_round(s21_decimal value, s21_decimal *result) {
     int res = 0;
     if (result) {
@@ -169,7 +152,8 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
 */
 
 // src: padmemur
-// passes more than half of the tests, need to check in main
+// works, passes almost all tests
+
 int s21_floor(s21_decimal value, s21_decimal *result) {
     int res = 0;
     if (result) {
@@ -178,9 +162,31 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
         s21_truncate(value, result);
         if (s21_is_less(value, zero)) {
             s21_sub(*result, one, result);
+            s21_setSign(result, !s21_getSign(*result));
         }
     } else {
         res = 1;
     }
     return res;
 }
+
+
+// src: nyarlath
+/*
+int s21_floor(s21_decimal value, s21_decimal *result) {
+  int flag = 0;
+  if (s21_getScale(value) > 28) {
+    flag = 1;
+  } else {
+    s21_decimal tmp = {{1, 0, 0, 0}};
+    s21_truncate(value, result);
+    //if (s21_getBit(value, 127) == 1) {
+    if (s21_getSign(*result) == 1) {
+      //s21_sub(*result, tmp, result);
+      s21_sub(*result, tmp, result);
+      s21_setSign(result, !s21_getSign(*result));
+    }
+  }
+  return flag;
+}
+*/

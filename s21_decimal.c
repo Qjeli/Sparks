@@ -3,13 +3,13 @@
 /// | ~ ~ ~ ~ ~ ~ ~ ~ common functions ~ ~ ~ ~ ~ ~ ~ ~ ~|
 
 int s21_getBit(s21_decimal d, int i) {
-    unsigned int mask = 1u << (i % 32); // u значит беззнаковая 1
-    return (d.bits [i / 32] & mask) >> (i%32); 
-    }
+  unsigned int mask = 1u << (i % 32);  // u значит беззнаковая 1
+  return (d.bits[i / 32] & mask) >> (i % 32);
+}
 
 void s21_setBit(s21_decimal *d, int i, int value) {
-    unsigned int mask = 1u << (i % 32);
-    if (i / 32 < 4 && value) {
+  unsigned int mask = 1u << (i % 32);
+  if (i / 32 < 4 && value) {
     d->bits[i / 32] |= mask;
   } else if (i / 32 < 4 && !value) {
     d->bits[i / 32] &= ~mask;  // ~ это побитовая инверсия
@@ -18,18 +18,22 @@ void s21_setBit(s21_decimal *d, int i, int value) {
 }
 
 int s21_getScale(const s21_decimal d) {
-   // return(char)(d.bits[3] >> 16);  // а если стоит знак отрицания то это не учитывают
-  return(char)((d.bits[3]& ~(1<<31)) >> 16);  // мой вариант
-    // но остается вопрос. а что по степени. она же может быть отрицательной
+  // return(char)(d.bits[3] >> 16);  // а если стоит знак отрицания то это не
+  // учитывают
+  return (char)((d.bits[3] & ~(1 << 30)) >>
+                16);  // мой вариант
+                      // но остается вопрос. а что по степени. она же может быть
+                      // отрицательной
 }
 
 void s21_setScale(s21_decimal *d, int scale) {
   int step = 0;
-    for(int i = s21_START_INFO + 16; i < s21_START_INFO + 24; i++) {  // TRY 23 if there is an error
-        s21_setBit(d, i, scale & (1 << step));  // возможно будет ошибка
-        step ++;
-        // scale >> 1;
-    }
+  for (int i = s21_START_INFO + 16; i < s21_START_INFO + 24;
+       i++) {                               // TRY 23 if there is an error
+    s21_setBit(d, i, scale & (1 << step));  // возможно будет ошибка
+    step++;
+    // scale >> 1;
+  }
 }
 
 void s21_check_scale(s21_decimal *value1, s21_decimal *value2) {
@@ -43,55 +47,60 @@ void s21_check_scale(s21_decimal *value1, s21_decimal *value2) {
 int s21_getSign(const s21_decimal d) {
   unsigned int mask = 1u << 31;
   // return !!(d>>bits[3] & mask);
-  return !!(d.bits[3] & mask); // получаем или 0 или 1    
+  return !!(d.bits[3] & mask);  // получаем или 0 или 1
 }
 
-void s21_setSign( s21_decimal *d, int sign) {
-  s21_setBit(d, 127, sign);
-}
+void s21_setSign(s21_decimal *d, int sign) { s21_setBit(d, 127, sign); }
 
 void s21_init_decimal(s21_decimal *dec) {
   dec->bits[0] = dec->bits[1] = dec->bits[2] = dec->bits[3] = 0;
 }
 
-int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2, int err_num) { // выравнивание по степени
+int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2,
+                           int err_num) {  // выравнивание по степени
   int res = err_num;
   s21_decimal *left = NULL;
   s21_decimal *right = NULL;
   s21_decimal remainder = {0};  // остаток
-  if (s21_getScale(*value_1) > s21_getScale(*value_2)) {  // смотрим какой из них больше
+  if (s21_getScale(*value_1) >
+      s21_getScale(*value_2)) {  // смотрим какой из них больше
     left = value_1;
     right = value_2;
   } else {
     left = value_2;
     right = value_1;
   }
-  if (s21_getScale(*value_1) != s21_getScale(*value_2)) { // получаем то на сколько сдвиг
-    int sign1 = s21_getSign(*left), sign2 = s21_getSign(*right); // получаем знак
+  if (s21_getScale(*value_1) !=
+      s21_getScale(*value_2)) {  // получаем то на сколько сдвиг
+    int sign1 = s21_getSign(*left),
+        sign2 = s21_getSign(*right);    // получаем знак
     s21_decimal ten = {{10, 0, 0, 0}};  // что это и зачем оно
     s21_setSign(left, 0);
     s21_setSign(right, 0);
-    while (s21_getScale(*left) != s21_getScale(*right) && // change right on left
-           s21_last_bit(*right) < 93 && s21_getScale(*right) <= 28) {
-      res = OK; // предпочла б чтоб вместо ок писали 0
+    int flag = 0;
+    while (
+        s21_getScale(*left) != s21_getScale(*right) &&  // change right on left
+        s21_last_bit(*right) < 93 && s21_getScale(*right) <= 28 && flag != 1) {
+      res = OK;  // предпочла б чтоб вместо ок писали 0
       int scale_small = s21_getScale(*right);
       s21_setScale(right, 0);
       res = s21_mul(ten, *right, right);
-      if (res != 0) break;
+      if (res != 0) flag = 1;
       s21_setScale(right, scale_small + 1);
     }
-    while (s21_getScale(*right) != s21_getScale(*left)) {
+    flag = 0;
+    while (s21_getScale(*right) != s21_getScale(*left) && flag != 1) {
       int res = OK;
       int scale_big = s21_getScale(*left);
       if (s21_getScale(*left) - s21_getScale(*right) == 1) {
         if (left->bits[0] >= 5 && left->bits[0] < 10) {
           left->bits[0] = 1;
           s21_setScale(left, scale_big - 1);
-          break;
+          flag = 1;
         }
       }
       res = s21_integer_division(*left, ten, left, &remainder, 1);
-      if (res != 0) break;
+      if (res != 0) flag = 1;
       s21_setScale(left, scale_big - 1);
     }
     s21_setSign(left, sign1);
@@ -108,19 +117,9 @@ void s21_decl_to_null(s21_decimal *decl) {
 
 void s21_bits_copy(s21_decimal value, s21_decimal *dest) {
   for (int i = 0; i < 4; ++i) {
-    dest->bits[i] = value.bits[i]; // хз что куда надо копировать 
+    dest->bits[i] = value.bits[i];  // хз что куда надо копировать
   }
 }
-
-// дублируется, мб это более актуально. надо проверить
-/*
-void s21_bits_copy(s21_decimal tmp_div, s21_decimal *tmp_mod){
-  int discharge = s21_last_bit(tmp_div) - s21_last_bit(*tmp_mod); 
-  for (int i = 95; i > discharge - 1; i--) {
-    s21_set_bit(tmp_mod, i, 0);
-  }
-}
-*/
 
 int s21_last_bit(s21_decimal value) {
   int last_bit = 95;
@@ -129,10 +128,12 @@ int s21_last_bit(s21_decimal value) {
   return last_bit;
 }
 
-void s21_setting(s21_decimal tmp_buf, s21_decimal *tmp_del, s21_decimal *tmp_mod, int *discharge) {
+void s21_setting(s21_decimal tmp_buf, s21_decimal *tmp_del,
+                 s21_decimal *tmp_mod, int *discharge) {
   s21_bits_copy(tmp_buf, tmp_del);
   s21_shift_left(tmp_del, 1);
-  s21_getBit(*tmp_mod, *discharge - 1) == 1 ? s21_setBit(tmp_del, 0, 1) : s21_setBit(tmp_del, 0, 0);
+  s21_getBit(*tmp_mod, *discharge - 1) == 1 ? s21_setBit(tmp_del, 0, 1)
+                                            : s21_setBit(tmp_del, 0, 0);
   s21_setBit(tmp_mod, *discharge - 1, 0);
   (*discharge)--;
 }
@@ -173,15 +174,17 @@ int s21_shift_right(s21_decimal *first, int shift) {
   return res_val;
 }
 
-int s21_integer_division(s21_decimal value_1, s21_decimal value_2, s21_decimal *result, s21_decimal *remainder, int error_code) {
-    s21_decimal tmp_div = {0};
-    s21_decimal tmp_del = {0};
-    s21_decimal tmp_mod = {0};
-    s21_decimal tmp_res = {0};
-    s21_decimal tmp_buf = {0};
+int s21_integer_division(s21_decimal value_1, s21_decimal value_2,
+                         s21_decimal *result, s21_decimal *remainder,
+                         int error_code) {
+  s21_decimal tmp_div = {0};
+  s21_decimal tmp_del = {0};
+  s21_decimal tmp_mod = {0};
+  s21_decimal tmp_res = {0};
+  s21_decimal tmp_buf = {0};
   int scale_value1 = s21_getScale(value_1);
   int index_res = 95, res = 0, discharge = 1;
-  int sign1 = s21_getSign(value_1), sign2 = s21_getSign(value_2); 
+  int sign1 = s21_getSign(value_1), sign2 = s21_getSign(value_2);
   int scale1 = s21_getScale(value_1), scale2 = s21_getScale(value_2);
   s21_bits_copy(value_1, &tmp_div);
   s21_setScale(&tmp_div, 0);
@@ -215,7 +218,8 @@ int s21_integer_division(s21_decimal value_1, s21_decimal value_2, s21_decimal *
     }
     s21_init_decimal(result);
     for (int i = 95; i > index_res; i--) {
-      s21_getBit(tmp_res, i) == 1 ? s21_setBit(result, i - index_res - 1, 1) : s21_setBit(result, i - index_res - 1, 0);
+      s21_getBit(tmp_res, i) == 1 ? s21_setBit(result, i - index_res - 1, 1)
+                                  : s21_setBit(result, i - index_res - 1, 0);
     }
     (sign1 != sign2) ? s21_setSign(result, 1) : NULL;
     s21_setScale(result, scale_value1);
@@ -226,15 +230,18 @@ int s21_integer_division(s21_decimal value_1, s21_decimal value_2, s21_decimal *
   return res;
 }
 
-void s21_first_prepare(s21_decimal tmp_div, s21_decimal *tmp_mod, s21_decimal *tmp_del, s21_decimal value_2, int *discharge) {
+void s21_first_prepare(s21_decimal tmp_div, s21_decimal *tmp_mod,
+                       s21_decimal *tmp_del, s21_decimal value_2,
+                       int *discharge) {
   *discharge = 0;
   int shift = s21_last_bit(tmp_div) - s21_last_bit(value_2);
   int n = 0;
-  while (1) {
+  int flag = 0;
+  while (tmp_mod && flag != 1) {
     s21_bits_copy(tmp_div, tmp_del);
     s21_shift_right(tmp_del, shift - n);
     if (s21_is_greater_or_equal(*tmp_del, value_2) == 1) {
-      break;
+      flag = 1;
     } else {
       n++;
     }
@@ -260,26 +267,26 @@ void s21_first_step(s21_decimal *tmp_div, s21_decimal value_2,
 }
 
 // Считаем количество знаков в src
-int count_src(float src, char* str_src) {
-    int count_str = 0, k = 1;
-    char str[100];
+// Надо убрать break не знаю как можно сделать без разрушения кода
+int count_src(float src, char *str_src) {
+  int count_str = 0, k = 1;
+  char str[100];
 
-    snprintf(str, sizeof(str), "%f", src);
-
-    for (int i = (int) strlen(str) - 1; i >= 0; i--) {
-        if (str[i] == '0' && k == 1) {
-            str[i] = '\0';
-            continue;
-        } else {
-            k = -1;
-        }
-        if (str[i] == '.') {
-            break;
-        }
-        count_str++;
+  snprintf(str, sizeof(str), "%f", src);
+  for (int i = (int)strlen(str) - 1; i >= 0; i--) {
+    if (str[i] == '0' && k == 1) {
+      str[i] = '\0';
+      continue;
+    } else {
+      k = -1;
     }
+    if (str[i] == '.') {
+      break;
+    }
+    count_str++;
+  }
 
-    strncpy(str_src, str, strlen(str) + 1);
+  strncpy(str_src, str, strlen(str) + 1);
 
-    return count_str;
+  return count_str;
 }

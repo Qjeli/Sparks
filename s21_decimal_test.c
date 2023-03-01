@@ -83,7 +83,28 @@ void s21_truncate_1() {
     printf("%s\n", res2);
 }
 
+void floor_1() {
+  s21_decimal val = {{3, 0, 0, ~(UINT_MAX / 2)}};
+  s21_decimal res = {0};
+  s21_floor(val, &res);
+  float fres = 0;
+  s21_from_decimal_to_float(res, &fres);
+  printf("%d\n", ~(UINT_MAX / 2));
+  printf("%f\n", fres);
+}
+
+void test_floor() {
+    float a = -5.6;
+    s21_decimal fl_d, fl_dr;
+    s21_from_float_to_decimal(a, &fl_d);
+    s21_floor(fl_d, &fl_dr);
+    float result;
+    s21_from_decimal_to_float(fl_dr, &result);
+    printf("%f - result\n", result);
+    printf("-6 - must be\n");
+}
+
 int main() {
-    test_neg_float();
+    test_floor();
     return 0;
 }
