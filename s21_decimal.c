@@ -20,7 +20,7 @@ void s21_setBit(s21_decimal *d, int i, int value) {
 int s21_getScale(const s21_decimal d) {
   // return(char)(d.bits[3] >> 16);  // а если стоит знак отрицания то это не
   // учитывают
-  return (char)((d.bits[3] & ~(1 << 31)) >>
+  return (char)((d.bits[3] & ~(1 << 30)) >>
                 16);  // мой вариант
                       // но остается вопрос. а что по степени. она же может быть
                       // отрицательной
@@ -77,28 +77,30 @@ int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2,
     s21_decimal ten = {{10, 0, 0, 0}};  // что это и зачем оно
     s21_setSign(left, 0);
     s21_setSign(right, 0);
+    int flag = 0;
     while (
         s21_getScale(*left) != s21_getScale(*right) &&  // change right on left
-        s21_last_bit(*right) < 93 && s21_getScale(*right) <= 28) {
+        s21_last_bit(*right) < 93 && s21_getScale(*right) <= 28 && flag != 1) {
       res = OK;  // предпочла б чтоб вместо ок писали 0
       int scale_small = s21_getScale(*right);
       s21_setScale(right, 0);
       res = s21_mul(ten, *right, right);
-      if (res != 0) break;
+      if (res != 0) flag = 1;
       s21_setScale(right, scale_small + 1);
     }
-    while (s21_getScale(*right) != s21_getScale(*left)) {
+    flag = 0;
+    while (s21_getScale(*right) != s21_getScale(*left) && flag != 1) {
       int res = OK;
       int scale_big = s21_getScale(*left);
       if (s21_getScale(*left) - s21_getScale(*right) == 1) {
         if (left->bits[0] >= 5 && left->bits[0] < 10) {
           left->bits[0] = 1;
           s21_setScale(left, scale_big - 1);
-          break;
+          flag = 1;
         }
       }
       res = s21_integer_division(*left, ten, left, &remainder, 1);
-      if (res != 0) break;
+      if (res != 0) flag = 1;
       s21_setScale(left, scale_big - 1);
     }
     s21_setSign(left, sign1);
@@ -234,11 +236,12 @@ void s21_first_prepare(s21_decimal tmp_div, s21_decimal *tmp_mod,
   *discharge = 0;
   int shift = s21_last_bit(tmp_div) - s21_last_bit(value_2);
   int n = 0;
-  while (tmp_mod) {
+  int flag = 0;
+  while (tmp_mod && flag != 1) {
     s21_bits_copy(tmp_div, tmp_del);
     s21_shift_right(tmp_del, shift - n);
     if (s21_is_greater_or_equal(*tmp_del, value_2) == 1) {
-      break;
+      flag = 1;
     } else {
       n++;
     }
@@ -264,12 +267,12 @@ void s21_first_step(s21_decimal *tmp_div, s21_decimal value_2,
 }
 
 // Считаем количество знаков в src
+// Надо убрать break не знаю как можно сделать без разрушения кода
 int count_src(float src, char *str_src) {
   int count_str = 0, k = 1;
   char str[100];
 
   snprintf(str, sizeof(str), "%f", src);
-
   for (int i = (int)strlen(str) - 1; i >= 0; i--) {
     if (str[i] == '0' && k == 1) {
       str[i] = '\0';

@@ -15,17 +15,20 @@ int s21_is_greater(s21_decimal value_1, s21_decimal value_2) {
   s21_check_scale(&value_1, &value_2);
   int num1 = 0, num2 = 0;
   int sign1 = s21_getSign(value_1), sign2 = s21_getSign(value_2);
-  for (int i = 95; i >= 0; i--) {
+  int i = 95;
+  while (i >= 0) {
     num1 = s21_getBit(value_1, i);
     num2 = s21_getBit(value_2, i);
     if (num1 > num2) {
       res = 1;
-      break;
+      i = 0;
     }
     if (num1 < num2) {
       res = 0;
-      break;
+      i = 0;
     }
+
+    i--;
   }
   if (sign1 && !sign2)
     res = 0;
@@ -44,11 +47,13 @@ int s21_is_equal(s21_decimal value1, s21_decimal value2) {
   s21_check_scale(&value1, &value2);
   int res = 1;
   int sign1 = s21_getSign(value1), sign2 = s21_getSign(value2);
-  for (int i = 95; i >= 0; i--) {
+  int i = 95;
+  while (i >= 0) {
     if (s21_getBit(value1, i) != s21_getBit(value2, i)) {
       res = 0;
-      break;
+      i = 0;
     }
+    i--;
   }
   if (sign1 != sign2) res = 0;
   return res;
