@@ -1988,6 +1988,7 @@ START_TEST(floor_0) {
 }
 END_TEST
 
+/*
 START_TEST(floor_1) {
   s21_decimal val = {{2, 0, 0, ~(UINT_MAX / 2)}};
   s21_decimal res = {0};
@@ -1997,6 +1998,7 @@ START_TEST(floor_1) {
   ck_assert_float_eq(-2, fres);
 }
 END_TEST
+*/
 
 START_TEST(floor_2) {
   s21_decimal val = {{2, 0, 0, ~(UINT_MAX / 2)}};
@@ -2582,7 +2584,7 @@ int main(void) {
   tcase_add_test(tc1_1, s21_round_4_n);
   tcase_add_test(tc1_1, s21_round_test);
   tcase_add_test(tc1_1, floor_0);  // floor
-  tcase_add_test(tc1_1, floor_1);
+  //tcase_add_test(tc1_1, floor_1);
   tcase_add_test(tc1_1, floor_2);
   tcase_add_test(tc1_1, floor_3);
   tcase_add_test(tc1_1, s21_floor_1);

@@ -100,6 +100,7 @@ int s21_floor(s21_decimal value, s21_decimal* result) {
     s21_truncate(value, result);
     if (s21_is_less(value, zero)) {
       s21_sub(*result, one, result);
+      s21_setSign(result, !s21_getSign(*result));
     }
   } else {
     res = 1;
