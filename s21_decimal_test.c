@@ -108,7 +108,7 @@ void test_floor() {
     printf("-4 - must be\n");
 }
 
-void test_round() {
+void test_round_1() {
     float a = -0.95008;
     float b = 0.95008;
     s21_decimal fl_da, fl_dar;
@@ -129,7 +129,29 @@ void test_round() {
     printf("1 - must be\n");
 }
 
+void test_round_2() {
+  s21_decimal dec1;
+  dec1.bits[0] = 0b00000000000000000000100110011000;
+  dec1.bits[1] = 0b00000000000000000000000000000000;
+  dec1.bits[2] = 0b00000000000000000000000000000000;
+  dec1.bits[3] = 0b00000000000000100000000000000000;
+  s21_decimal result;
+  result.bits[0] = 0b00000000000000000000000000011000;
+  result.bits[1] = 0b00000000000000000000000000000000;
+  result.bits[2] = 0b00000000000000000000000000000000;
+  result.bits[3] = 0b00000000000000000000000000000000;
+  s21_decimal res1;
+  s21_round(dec1, &res1);
+  float dec1_fl, res1_fl, result_fl;
+  s21_from_decimal_to_float(dec1, &dec1_fl);
+  s21_from_decimal_to_float(res1, &res1_fl);
+  s21_from_decimal_to_float(result, &result_fl);
+  printf("%f - initial value\n", dec1_fl);
+  printf("%f - result\n", res1_fl);
+  printf("%f - must be\n", result_fl);
+}
+
 int main() {
-    test_floor();
+    test_round_2();
     return 0;
 }
