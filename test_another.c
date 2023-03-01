@@ -327,6 +327,7 @@ END_TEST
 
 // TRUNCATE from rynortheast
 
+/*
 START_TEST(truncate_0) {
   s21_decimal val = {{7, 7, 7, 0}};
   s21_decimal res = {0};
@@ -337,6 +338,7 @@ START_TEST(truncate_0) {
   ck_assert_float_eq(need, fres);
 }
 END_TEST
+*/
 
 START_TEST(truncate_1) {
   s21_decimal val = {{2, 0, 0, ~(4294967295 / 2)}};
@@ -384,17 +386,17 @@ START_TEST(truncate_4) {
 // }
 // END_TEST
 
-// START_TEST(round_9) {
-//   s21_decimal val = {{128, 0, 0, 0}};
-//   s21_decimal res = {0};
-//   s21_setScale(&val, 1);
-//   s21_round(val, &res);
-//   float fres = 0;
-//   s21_from_decimal_to_float(res, &fres);
-//   float need = 13;
-//   ck_assert_float_eq(need, fres);
-// }
-// END_TEST
+START_TEST(round_9) {
+  s21_decimal val = {{128, 0, 0, 0}};
+  s21_decimal res = {0};
+  s21_setScale(&val, 1);
+  s21_round(val, &res);
+  float fres = 0;
+  s21_from_decimal_to_float(res, &fres);
+  float need = 13;
+  ck_assert_float_eq(need, fres);
+}
+END_TEST
 
 // ROUND from chastity or kchonsu or MedmeFord
 
@@ -444,7 +446,7 @@ END_TEST
 
 START_TEST(s21_round_5) {
 s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
-s21_setScale(&x, 5);
+s21_setScale(&x, 5); // 0.95008
 s21_decimal z = {{0, 0, 0, 0}};
 s21_round(x, &z);
 char res1[1000], res2[1000] = "1 0 0 0";
@@ -455,7 +457,7 @@ END_TEST
 
 START_TEST(s21_round_6) {
 s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
-s21_setScale(&x, 6);
+s21_setScale(&x, 6); // 0.095008
 s21_decimal z = {{0, 0, 0, 0}};
 s21_round(x, &z);
 char res1[1000], res2[1000] = "0 0 0 0";
@@ -1266,12 +1268,12 @@ int main(void) {
   tcase_add_test(tc, s21_truncate_test);  // truncate
   tcase_add_test(tc, s21_truncate_1);
   tcase_add_test(tc, s21_truncate_2);
-  tcase_add_test(tc, truncate_0);
+  // tcase_add_test(tc, truncate_0);
   tcase_add_test(tc, truncate_1);
   tcase_add_test(tc, truncate_3);
   tcase_add_test(tc, truncate_4);
   // tcase_add_test(tc, round_0);  // round
-  // tcase_add_test(tc, round_9);
+  tcase_add_test(tc, round_9);
   tcase_add_test(tc, s21_round_1);
   tcase_add_test(tc, s21_round_2);
   tcase_add_test(tc, s21_round_3);

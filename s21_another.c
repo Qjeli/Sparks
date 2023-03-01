@@ -70,55 +70,43 @@ int s21_truncate(s21_decimal value, s21_decimal* result) {
     return res;
 }
 
-/*
 // src: grishakir
 // does not work, tests from rynortheast are wrong
 // need to add error check
-int s21_round(s21_decimal value, s21_decimal *result) {
-    s21_decimal one = {{1, 0, 0, 0}};
-    s21_bits_copy(value, result);
-
-    if (s21_getScale(value)) {
-        if (s21_getBit(value, s21_getScale(value) - 1)) {
-            if (s21_getSign(value)) {
-                s21_sub(value, one, result);
-            } else {
-                s21_add(value, one, result);
-            }
-        }
-        for (int i = 0; i < s21_getScale(value); ++i) 
-            {}
-        s21_setScale(result, 0);
-    }
-    return 0;
-}
-*/
 
 // src: padmemur
-// passes more than half of the tests
-// try to test in main
+// passes most tests
+// does not work correctly in the range between 0 and 1
+
 int s21_round(s21_decimal value, s21_decimal *result) {
     int res = 0;
     if (result) {
-        int is_less_then_zero = 0;
-        s21_decimal tmp_value;
-        s21_decimal half;
-        s21_decimal diff;
-        s21_decimal one = {{1, 0, 0, 0}};
-        s21_from_float_to_decimal(0.5, &half);
+        int is_less_than_zero = 0;
         s21_decimal zero = {{0, 0, 0, 0}};
+        s21_decimal half;
+        s21_decimal one = {{1, 0, 0, 0}};
+        s21_decimal value_int;
+        s21_decimal mantissa;
+        s21_from_float_to_decimal(0.5, &half);
         if (s21_is_less(value, zero)) {
-            is_less_then_zero = 1;
+            is_less_than_zero = 1;
             s21_negate(value, &value);
         }
-        s21_truncate(value, &tmp_value);
-        s21_sub(value, tmp_value, &diff);
-        if (s21_is_greater_or_equal(diff, half)) {
-            s21_add(tmp_value, one, result);
+        s21_truncate(value, &value_int);
+        s21_sub(value, value_int, &mantissa);
+
+        // there is an issue with the commented comparison
+        float mantissa_fl, half_fl;
+        s21_from_decimal_to_float(mantissa, &mantissa_fl);
+        s21_from_decimal_to_float(half, &half_fl);
+        if (mantissa_fl >= half_fl) {
+        // if (s21_is_greater_or_equal(mantissa, half)) {
+            s21_add(value_int, one, result);
         } else {
-            *result = tmp_value;
+            *result = value_int;
         }
-        if (is_less_then_zero) {
+
+        if (is_less_than_zero) {
             s21_negate(*result, result);
         }
     } else {
@@ -153,14 +141,15 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
 
 // src: padmemur
 // works, passes almost all tests
-
 int s21_floor(s21_decimal value, s21_decimal *result) {
     int res = 0;
     if (result) {
         s21_decimal zero = {{0, 0, 0, 0}};
         s21_decimal one = {{1, 0, 0, 0}};
+        s21_decimal value_int;
         s21_truncate(value, result);
-        if (s21_is_less(value, zero)) {
+        s21_truncate(value, &value_int);
+        if (s21_is_less(value, zero) && s21_is_not_equal(value, value_int)) {
             s21_sub(*result, one, result);
             s21_setSign(result, !s21_getSign(*result));
         }
@@ -169,7 +158,6 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
     }
     return res;
 }
-
 
 // src: nyarlath
 /*

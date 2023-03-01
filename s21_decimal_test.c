@@ -1,20 +1,20 @@
 #include "s21_decimal.h"
 
 void test_neg_int() {
-    int value_int = 0, res = 0;
+    int fl_daint = 0, res = 0;
     s21_decimal value_dec, value_dec_neg;
-    scanf("%d", &value_int);
-    s21_from_int_to_decimal(value_int, &value_dec);
+    scanf("%d", &fl_daint);
+    s21_from_int_to_decimal(fl_daint, &value_dec);
     s21_negate(value_dec, &value_dec_neg);
     s21_from_decimal_to_int(value_dec_neg, &res);
     printf("%d\n", res);
 }
 
 void test_neg_float() {
-    float value_int = 0, res = 0;
+    float fl_daint = 0, res = 0;
     s21_decimal value_dec, value_dec_neg;
-    scanf("%f", &value_int);
-    s21_from_float_to_decimal(value_int, &value_dec);
+    scanf("%f", &fl_daint);
+    s21_from_float_to_decimal(fl_daint, &value_dec);
     s21_negate(value_dec, &value_dec_neg);
     s21_from_decimal_to_float(value_dec_neg, &res);
     printf("%f\n", res);
@@ -84,24 +84,49 @@ void s21_truncate_1() {
 }
 
 void floor_1() {
-  s21_decimal val = {{3, 0, 0, ~(UINT_MAX / 2)}};
+  s21_decimal val = {{2, 0, 0, ~(UINT_MAX / 2)}};
   s21_decimal res = {0};
   s21_floor(val, &res);
   float fres = 0;
+  float value_fl = 0;
   s21_from_decimal_to_float(res, &fres);
-  printf("%d\n", ~(UINT_MAX / 2));
-  printf("%f\n", fres);
+  s21_from_decimal_to_float(val, &value_fl);
+  printf("%d - UINT_MAX\n", ~(UINT_MAX / 2));
+  printf("%f - initial value\n", value_fl);
+  printf("%f - result\n", fres);
+  printf("-2 - must be\n");
 }
 
 void test_floor() {
-    float a = -5.6;
+    float a = -4;
     s21_decimal fl_d, fl_dr;
     s21_from_float_to_decimal(a, &fl_d);
     s21_floor(fl_d, &fl_dr);
     float result;
     s21_from_decimal_to_float(fl_dr, &result);
     printf("%f - result\n", result);
-    printf("-6 - must be\n");
+    printf("-4 - must be\n");
+}
+
+void test_round() {
+    float a = -0.95008;
+    float b = 0.95008;
+    s21_decimal fl_da, fl_dar;
+    s21_decimal fl_db, fl_dbr;
+    s21_from_float_to_decimal(a, &fl_da);
+    s21_from_float_to_decimal(b, &fl_db);
+    // s21_setScale(&fl_da, 6);
+    // s21_setScale(&fl_db, 6);
+    s21_round(fl_da, &fl_dar);
+    s21_round(fl_db, &fl_dbr);
+    float result_a;
+    float result_b;
+    s21_from_decimal_to_float(fl_dar, &result_a);
+    s21_from_decimal_to_float(fl_dbr, &result_b);
+    printf("%f - result\n", result_a);
+    printf("-1 - must be\n");
+    printf("%f - result\n", result_b);
+    printf("1 - must be\n");
 }
 
 int main() {
