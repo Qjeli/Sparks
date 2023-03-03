@@ -5,7 +5,7 @@ TEST_LIBS = -lcheck -lrt -lm -lpthread -lsubunit
 OBJECTS = s21_another.o s21_arithmetic.o s21_comparison.o s21_converters.o s21_decimal.o
 SOURSES = s21_another.c s21_arithmetic.c s21_comparison.c s21_converters.c s21_decimal.c
 #TEST_OBJECTS = test_another.o test_arithmetic.o test_comparison.o test_converters.o test_decimal.o
-TEST_OBJECT = test_another.o
+TEST_OBJECT = test_arithmetic.o
 
 .PHONY: all clean test s21_decimal.a gcov_report
 

@@ -151,7 +151,47 @@ void test_round_2() {
   printf("%f - must be\n", result_fl);
 }
 
+void add_test_6() {
+    int num1 = -1;
+    int num2 = -10;
+    int sum_int = -11;
+    s21_decimal a, b;
+    
+    s21_from_int_to_decimal(num1, &a);
+    s21_from_int_to_decimal(num2, &b);
+
+    s21_decimal res_dec = {0};
+    int res_int = 0;
+    
+    s21_add(a, b, &res_dec);
+    s21_from_decimal_to_int(res_dec, &res_int);
+    
+    printf("%d - result\n", res_int);
+    printf("%d - must be\n", sum_int);
+}
+
+void sub_test() {
+    int num1 = -11;
+    int num2 = 10;
+    int sum_int = -21;
+    s21_decimal a, b;
+    
+    s21_from_int_to_decimal(num1, &a);
+    s21_from_int_to_decimal(num2, &b);
+
+    s21_decimal res_dec = {0};
+    int res_int = 0;
+    
+    s21_sub(a, b, &res_dec);
+    s21_from_decimal_to_int(res_dec, &res_int);
+    
+    printf("%d-%d\n", num1, num2);
+    printf("%d - result\n", res_int);
+    printf("%d - must be\n", sum_int);
+}
+
+
 int main() {
-    test_round_2();
+    sub_test();
     return 0;
 }
