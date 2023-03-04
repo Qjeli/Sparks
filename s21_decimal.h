@@ -21,6 +21,7 @@ typedef struct {
 #define TOO_MUCH_OR_INF 1
 #define TOO_FEW_OR_NEG_INF 2
 #define division_by_0 3
+#define S21_MAX_UINT 4294967295
 
 int s21_getBit(s21_decimal d, int i);  //получения 1 или 0 для каждого бита
 void s21_setBit(s21_decimal *d, int i,

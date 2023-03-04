@@ -35,51 +35,51 @@ int s21_simple_add(s21_decimal value1, s21_decimal value2,
   return rank;
 }
 
-s21_decimal s21_simple_div(s21_decimal value1, s21_decimal value2,
-                           s21_decimal *result) {
-  if (result) {
-    s21_decl_to_null(result);
-  }
+// s21_decimal s21_simple_div(s21_decimal value1, s21_decimal value2,
+//                            s21_decimal *result) {
+//   if (result) {
+//     s21_decl_to_null(result);
+//   }
 
-  int flag = 0;
+//   int flag = 0;
 
-  s21_decimal ret = {0};
-  s21_decimal temp = {0};
-  if (s21_is_greater_or_equal(value1, value2)) {
-    s21_setBit(&temp, 0, 1);
-  }
-  if (s21_is_greater(value2, value1)) {
-    while (result) {
-      s21_decimal copy_val2 = value2;
-      while (s21_is_greater_or_equal(value1, copy_val2) &&
-             !(s21_getBit(value1, 95) && s21_getBit(copy_val2, 95))) {
-        s21_shift_left(&copy_val2, 95);
-        s21_shift_left(&temp, 95);
-      }
+//   s21_decimal ret = {0};
+//   s21_decimal temp = {0};
+//   if (s21_is_greater_or_equal(value1, value2)) {
+//     s21_setBit(&temp, 0, 1);
+//   }
+//   if (s21_is_greater(value2, value1)) {
+//     while (result) {
+//       s21_decimal copy_val2 = value2;
+//       while (s21_is_greater_or_equal(value1, copy_val2) &&
+//              !(s21_getBit(value1, 95) && s21_getBit(copy_val2, 95))) {
+//         s21_shift_left(&copy_val2, 95);
+//         s21_shift_left(&temp, 95);
+//       }
 
-      if ((!s21_getBit(value1, 95) && s21_getBit(copy_val2, 95)) ||
-          (s21_is_greater_or_equal(copy_val2, value1))) {
-        s21_shift_right(&copy_val2, 96);
-        s21_shift_right(&temp, 96);
-      }
+//       if ((!s21_getBit(value1, 95) && s21_getBit(copy_val2, 95)) ||
+//           (s21_is_greater_or_equal(copy_val2, value1))) {
+//         s21_shift_right(&copy_val2, 96);
+//         s21_shift_right(&temp, 96);
+//       }
 
-      s21_simple_sub(value1, copy_val2, &value1);
-      if (result) {
-        s21_simple_add(*result, temp, result);
-      }
-      s21_decl_to_null(&temp);
-      s21_setBit(&temp, 0, 1);
+//       s21_simple_sub(value1, copy_val2, &value1);
+//       if (result) {
+//         s21_simple_add(*result, temp, result);
+//       }
+//       s21_decl_to_null(&temp);
+//       s21_setBit(&temp, 0, 1);
 
-      if (s21_is_less(value1, value2)) {
-        flag = 1;
-      }
-    }
-  }
-  if (!flag) {
-    ret = value1;
-  }
-  return ret;
-}
+//       if (s21_is_less(value1, value2)) {
+//         flag = 1;
+//       }
+//     }
+//   }
+//   if (!flag) {
+//     ret = value1;
+//   }
+//   return ret;
+// }
 
 /// | - - - - - - - - - Converters - - - - - - - - - - - |
 
@@ -104,22 +104,23 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
     flag = 1;
   }
   char str_src[1024];
-  int count = count_src(src, str_src),
-      is_full = 0;  //  count_src копирует переносит массив оттуда в str_src
+  int count = count_src(
+      src, str_src);  //  count_src копирует переносит массив оттуда в str_src
 
   s21_from_int_to_decimal(10, &ten);
   for (size_t i = 0; i < strlen(str_src);
        i++) {  //  проходим по элементам и проверяем условие
     if (str_src[i] != '.' && str_src[i] != '-') {
       s21_from_int_to_decimal(str_src[i] - '0', &add);
-      is_full = s21_mul(*dst, ten, dst);
+      s21_mul(*dst, ten, dst);
       s21_simple_add(*dst, add, dst);
     }
   }
 
-  if (is_full) {
-    s21_simple_div(*dst, ten, dst);
-  }
+  // if (is_full) {
+  //   s21_simple_div(*dst, ten, dst);
+  //   printf("%d", is_full);
+  // }
 
   s21_setSign(dst, src < 0);
   s21_setScale(dst, count);
