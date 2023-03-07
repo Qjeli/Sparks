@@ -49,7 +49,6 @@ int add(s21_decimal left, s21_decimal right, s21_decimal *result) {
   return res;
 }
 
-// used in s21_add
 void inverse(s21_decimal *value) {
   value->bits[0] = ~value->bits[0];
   value->bits[1] = ~value->bits[1];
@@ -95,7 +94,6 @@ int check(s21_decimal val_1, s21_decimal val_2, s21_decimal *result) {
 }
 
 /// | - - - - - - - - - ariphmetic - - - - - - - - - - - |
-
 int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   // считаем что одинаковый размер
   int res = OK;
@@ -127,13 +125,13 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   s21_init_decimal(result);
   // s21_scale_equalization(&right, &left, 0);
   int singRight = s21_getSign(right);
-  // int singLeft = s21_getSign(left); //
+  // int singLeft = s21_getSign(left);
   s21_setSign(&right, singRight = 1 - singRight);
   if (s21_getSign(left) == s21_getSign(right)) {
     s21_setSign(&right, 0);
     s21_setSign(&left, 0);
     s21_setSign(result, singRight);  // установка знака
-  } 
+  }
   // if ((s21_getSign(value_1) == 1) && (s21_getSign(value_2) == 0)) {
   //   // s21_setSign(result, singLeft);  // установка знака
   //   // s21_negate(right, &right);
@@ -167,7 +165,7 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   return flag;
 }
 
-//деление
+// деление
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   int flag = 0;
   s21_decimal val_1 = value_1;
@@ -175,7 +173,6 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   s21_scale_equalization(&val_1, &val_2, 0);
   if (check(value_1, value_2, result) !=
       0) {  // если делит на 0 или 0 делит на что-то
-    // why
   } else {
     int bit = 0;
     int sign_1 = s21_getSign(value_1);  // получаем знак
@@ -218,7 +215,7 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   return flag;
 }
 
-//остаток от деления
+// остаток от деления
 int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   int flag = 0;
   s21_decimal val_1 = value_1;
