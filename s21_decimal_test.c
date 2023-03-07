@@ -190,8 +190,26 @@ void sub_test() {
     printf("%d - must be\n", sum_int);
 }
 
+void mul_test() {
+  float num1 = 9403.0e2;
+  float num2 = 9403.0e2;
+  float res_origin = 884164090000;
+  s21_decimal a = {0};
+  s21_decimal b = {0};
+  s21_from_float_to_decimal(num1, &a);
+  s21_from_float_to_decimal(num2, &b);
+  s21_decimal res_dec = {0};
+  float res_float = 0;
+  s21_mul(a, b, &res_dec);
+  s21_from_decimal_to_float(res_dec, &res_float);
+    
+    printf("%f x %f\n", num1, num2);
+    printf("%f - result\n", res_float);
+    printf("%f - must be\n", res_origin);
+}
+
 
 int main() {
-    sub_test();
+    mul_test();
     return 0;
 }
