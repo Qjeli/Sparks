@@ -11,8 +11,8 @@
  * ---------------------------------------------------------------- */
 
 START_TEST(decimal_add_1) {
-  s21_decimal x = {
-      {4294967294, S21_MAX_UINT, S21_MAX_UINT, 0b00000000000000000000000000000000}};
+  s21_decimal x = {{4294967294, S21_MAX_UINT, S21_MAX_UINT,
+                    0b00000000000000000000000000000000}};
   s21_decimal y = {{1, 0, 0, 0b00000000000000000000000000000000}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_add(x, y, &z);
@@ -40,7 +40,7 @@ START_TEST(decimal_add_3) {
   s21_decimal y = {{21, 0, 0, 0b10000000000000000000000000000000}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_add(x, y, &z);
-  char res1[1000], res2[1000] = "41 1 0 0";
+  char res1[1000], res2[1000] = "41 1 0 2147483648";
   snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
            z.bits[2], z.bits[3]);
   ck_assert_str_eq(res1, res2);
@@ -277,8 +277,8 @@ s21_setScale(&y, 18);
 s21_decimal z = {{0, 0, 0, 0}};
 s21_mul(x, y, &z);
 char res1[1000], res2[1000] = "0 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1],
+z.bits[2], z.bits[3]); ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
@@ -290,24 +290,24 @@ s21_setScale(&y, 12);
 s21_decimal z = {{0, 0, 0, 0}};
 s21_mul(x, y, &z);
 char res1[1000], res2[1000] = "0 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1],
+z.bits[2], z.bits[3]); ck_assert_str_eq(res1, res2);
 }
 END_TEST
 */
 
 START_TEST(decimal_mul_16) {
-s21_decimal src1, src2;
-int a = 9403;
-int b = 202;
-int res_our_dec = 0;
-s21_from_int_to_decimal(a, &src1);
-s21_from_int_to_decimal(b, &src2);
-int res_origin = 1899406;
-s21_decimal res_od;
-s21_mul(src1, src2, &res_od);
-s21_from_decimal_to_int(res_od, &res_our_dec);
-ck_assert_int_eq(res_our_dec, res_origin);
+  s21_decimal src1, src2;
+  int a = 9403;
+  int b = 202;
+  int res_our_dec = 0;
+  s21_from_int_to_decimal(a, &src1);
+  s21_from_int_to_decimal(b, &src2);
+  int res_origin = 1899406;
+  s21_decimal res_od;
+  s21_mul(src1, src2, &res_od);
+  s21_from_decimal_to_int(res_od, &res_our_dec);
+  ck_assert_int_eq(res_our_dec, res_origin);
 }
 END_TEST
 
@@ -458,164 +458,176 @@ END_TEST
  * ---------------------------------------------------------------- */
 
 START_TEST(decimal_div_1) {
-s21_decimal x = {{3100000000, 0, 0, 0b00000000000000000000000000000000}};
-s21_decimal y = {{1, 0, 0, 0b00000000000000000000000000000000}};
-s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
-s21_div(x, y, &z);
-char res1[1000], res2[1000] = "3100000000 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{3100000000, 0, 0, 0b00000000000000000000000000000000}};
+  s21_decimal y = {{1, 0, 0, 0b00000000000000000000000000000000}};
+  s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
+  s21_div(x, y, &z);
+  char res1[1000], res2[1000] = "3100000000 0 0 0";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(decimal_div_2) {
-s21_decimal x = {{1, 0, 0, 0b00000000000000000000000000000000}};
-s21_decimal y = {{3100000000, 0, 0, 0b00000000000000000000000000000000}};
-s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
-s21_div(x, y, &z);
-char res1[1000], res2[1000] = "3225810516 0 0 1245184";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{1, 0, 0, 0b00000000000000000000000000000000}};
+  s21_decimal y = {{3100000000, 0, 0, 0b00000000000000000000000000000000}};
+  s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
+  s21_div(x, y, &z);
+  char res1[1000], res2[1000] = "3225810516 0 0 1245184";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(decimal_div_3) {
-s21_decimal x = {{52525252, 0, 0, 0b00000000000000000000000000000000}};
-s21_decimal y = {{0, 0, 0, 0b00000000000000000000000000000000}};
-s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
-int n1 = 0;
-n1 = s21_div(x, y, &z);
-char res1[1000], res2[1000] = "0 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
-ck_assert_int_eq(n1, 3);
+  s21_decimal x = {{52525252, 0, 0, 0b00000000000000000000000000000000}};
+  s21_decimal y = {{0, 0, 0, 0b00000000000000000000000000000000}};
+  s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
+  int n1 = 0;
+  n1 = s21_div(x, y, &z);
+  char res1[1000], res2[1000] = "0 0 0 0";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
+  ck_assert_int_eq(n1, 3);
 }
 END_TEST
 
 START_TEST(decimal_div_4) {
-s21_decimal x = {{52525252, 0, 0, 0b10000000000000000000000000000000}};
-s21_decimal y = {{0, 0, 0, 0b00000000000000000000000000000000}};
-s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
-int n1 = 0;
-n1 = s21_div(x, y, &z);
-char res1[1000], res2[1000] = "0 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
-ck_assert_int_eq(n1, 3);
+  s21_decimal x = {{52525252, 0, 0, 0b10000000000000000000000000000000}};
+  s21_decimal y = {{0, 0, 0, 0b00000000000000000000000000000000}};
+  s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
+  int n1 = 0;
+  n1 = s21_div(x, y, &z);
+  char res1[1000], res2[1000] = "0 0 0 0";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
+  ck_assert_int_eq(n1, 3);
 }
 END_TEST
 
 START_TEST(decimal_div_5) {
-s21_decimal x = {{52525252, 0, 0, 0b0000000000000000000000000000000}};
-s21_decimal y = {{0, 0, 0, 0b10000000000000000000000000000000}};
-s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
-int n1 = 0;
-n1 = s21_div(x, y, &z);
-char res1[1000], res2[1000] = "0 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
-ck_assert_int_eq(n1, 3);
+  s21_decimal x = {{52525252, 0, 0, 0b0000000000000000000000000000000}};
+  s21_decimal y = {{0, 0, 0, 0b10000000000000000000000000000000}};
+  s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
+  int n1 = 0;
+  n1 = s21_div(x, y, &z);
+  char res1[1000], res2[1000] = "0 0 0 0";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
+  ck_assert_int_eq(n1, 3);
 }
 END_TEST
 
 START_TEST(decimal_div_6) {
-s21_decimal x = {{52525252, 0, 0, 8845}};
-s21_decimal y = {{0, 0, 0, 10}};
-s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
-int n1 = 0;
-n1 = s21_div(x, y, &z);
-char res1[1000], res2[1000] = "0 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
-ck_assert_int_eq(n1, 3);
+  s21_decimal x = {{52525252, 0, 0, 8845}};
+  s21_decimal y = {{0, 0, 0, 10}};
+  s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
+  int n1 = 0;
+  n1 = s21_div(x, y, &z);
+  char res1[1000], res2[1000] = "0 0 0 0";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
+  ck_assert_int_eq(n1, 3);
 }
 END_TEST
 
 START_TEST(decimal_div_7) {
-s21_decimal x = {{52525252, 0, 0, 65465}};
-s21_decimal y = {{0, 0, 0, 9598595}};
-s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
-int n1 = 0;
-n1 = s21_div(x, y, &z);
-char res1[1000], res2[1000] = "0 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
-ck_assert_int_eq(n1, 3);
+  s21_decimal x = {{52525252, 0, 0, 65465}};
+  s21_decimal y = {{0, 0, 0, 9598595}};
+  s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
+  int n1 = 0;
+  n1 = s21_div(x, y, &z);
+  char res1[1000], res2[1000] = "0 0 0 0";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
+  ck_assert_int_eq(n1, 3);
 }
 END_TEST
 
 START_TEST(decimal_div_8) {
-s21_decimal x = {{5, 0, 0, 0}};
-s21_decimal y = {{3, 0, 0, 0}};
-s21_decimal z = {{0, 0, 0, 0}};
-s21_setScale(&x, 0);
-s21_setScale(&y, 20);
-int n1 = 0;
-n1 = s21_div(x, y, &z);
-char res1[1000], res2[1000] = "447392427 1737688055 903501810 524288";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
-ck_assert_int_eq(n1, 0);
+  s21_decimal x = {{5, 0, 0, 0}};
+  s21_decimal y = {{3, 0, 0, 0}};
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_setScale(&x, 0);
+  s21_setScale(&y, 20);
+  int n1 = 0;
+  n1 = s21_div(x, y, &z);
+  char res1[1000], res2[1000] = "447392427 1737688055 903501810 524288";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
+  ck_assert_int_eq(n1, 0);
 }
 END_TEST
 
 START_TEST(decimal_div_9) {
-s21_decimal x = {{5, 0, 0, 0b00000000000000000000000000000000}};
-s21_decimal y = {{3, 0, 0, 0b10000000000000000000000000000000}};
-s21_decimal z = {{0, 0, 0, 0}};
-s21_setScale(&x, 0);
-s21_setScale(&y, 20);
-int n1 = 0;
-n1 = s21_div(x, y, &z);
-char res1[1000], res2[1000] = "447392427 1737688055 903501810 2148007936";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
-ck_assert_int_eq(n1, 0);
+  s21_decimal x = {{5, 0, 0, 0b00000000000000000000000000000000}};
+  s21_decimal y = {{3, 0, 0, 0b10000000000000000000000000000000}};
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_setScale(&x, 0);
+  s21_setScale(&y, 20);
+  int n1 = 0;
+  n1 = s21_div(x, y, &z);
+  char res1[1000], res2[1000] = "447392427 1737688055 903501810 2148007936";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
+  ck_assert_int_eq(n1, 0);
 }
 END_TEST
 
 START_TEST(decimal_div_10) {
-s21_decimal x = {{5, 0, 0, 0b10000000000000000000000000000000}};
-s21_decimal y = {{3, 0, 0, 0b00000000000000000000000000000000}};
-s21_decimal z = {{0, 0, 0, 0}};
-s21_setScale(&x, 0);
-s21_setScale(&y, 20);
-int n1 = 0;
-n1 = s21_div(x, y, &z);
-char res1[1000], res2[1000] = "447392427 1737688055 903501810 2148007936";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
-ck_assert_int_eq(n1, 0);
+  s21_decimal x = {{5, 0, 0, 0b10000000000000000000000000000000}};
+  s21_decimal y = {{3, 0, 0, 0b00000000000000000000000000000000}};
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_setScale(&x, 0);
+  s21_setScale(&y, 20);
+  int n1 = 0;
+  n1 = s21_div(x, y, &z);
+  char res1[1000], res2[1000] = "447392427 1737688055 903501810 2148007936";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
+  ck_assert_int_eq(n1, 0);
 }
 END_TEST
 
 START_TEST(decimal_div_11) {
-s21_decimal x = {{5, 0, 0, 0b10000000000000000000000000000000}};
-s21_decimal y = {{3, 0, 0, 0b10000000000000000000000000000000}};
-s21_decimal z = {{0, 0, 0, 0}};
-s21_setScale(&x, 0);
-s21_setScale(&y, 20);
-int n1 = 0;
-n1 = s21_div(x, y, &z);
-char res1[1000], res2[1000] = "447392427 1737688055 903501810 524288";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
-ck_assert_int_eq(n1, 0);
+  s21_decimal x = {{5, 0, 0, 0b10000000000000000000000000000000}};
+  s21_decimal y = {{3, 0, 0, 0b10000000000000000000000000000000}};
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_setScale(&x, 0);
+  s21_setScale(&y, 20);
+  int n1 = 0;
+  n1 = s21_div(x, y, &z);
+  char res1[1000], res2[1000] = "447392427 1737688055 903501810 524288";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
+  ck_assert_int_eq(n1, 0);
 }
 END_TEST
 
 START_TEST(decimal_div_12) {
-s21_decimal x = {{5, 0, 50, 0b10000000000000000000000000000000}};
-s21_decimal y = {{5, 0, 0, 0b10000000000000000000000000000000}};
-s21_decimal z = {{0, 0, 0, 0}};
-s21_setScale(&x, 0);
-s21_setScale(&y, 20);
-int n1 = 0;
-n1 = s21_div(x, y, &z);
-char res1[1000], res2[1000] = "0 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
-ck_assert_int_eq(n1, 3);
+  s21_decimal x = {{5, 0, 50, 0b10000000000000000000000000000000}};
+  s21_decimal y = {{5, 0, 0, 0b10000000000000000000000000000000}};
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_setScale(&x, 0);
+  s21_setScale(&y, 20);
+  int n1 = 0;
+  n1 = s21_div(x, y, &z);
+  char res1[1000], res2[1000] = "0 0 0 0";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
+  ck_assert_int_eq(n1, 3);
 }
 END_TEST
 
@@ -649,9 +661,8 @@ s21_setScale(&y, 3);
 int n1 = 0;
 n1 = s21_mod(x, y, &z);
 char res1[1000], res2[1000] = "0 0 0 196608";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
-ck_assert_int_eq(n1, 0);
+snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1],
+z.bits[2], z.bits[3]); ck_assert_str_eq(res1, res2); ck_assert_int_eq(n1, 0);
 }
 END_TEST
 */
@@ -714,9 +725,8 @@ s21_setScale(&y, 0);
 int n1 = 0;
 n1 = s21_mod(x, y, &z);
 char res1[1000], res2[1000] = "0 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
-ck_assert_int_eq(n1, 2);
+snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1],
+z.bits[2], z.bits[3]); ck_assert_str_eq(res1, res2); ck_assert_int_eq(n1, 2);
 }
 END_TEST
 */
@@ -1703,7 +1713,8 @@ START_TEST(s21_truncate_1) {
   s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
   s21_truncate(x, &z);
   char res1[1000], res2[1000] = "15 0 0 2147483648";
-  snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
   ck_assert_str_eq(res1, res2);
 }
 END_TEST
@@ -1714,7 +1725,8 @@ START_TEST(s21_truncate_2) {
   s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
   s21_truncate(x, &z);
   char res1[1000], res2[1000] = "150 0 0 0";
-  snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
   ck_assert_str_eq(res1, res2);
 }
 END_TEST
@@ -1795,182 +1807,194 @@ START_TEST(round_test) {
 END_TEST
 
 START_TEST(s21_round_1) {
-s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
-s21_setScale(&x, 0);
-s21_decimal z = {{0, 0, 0, 0}};
-s21_round(x, &z);
-char res1[1000], res2[1000] = "95008 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
+  s21_setScale(&x, 0);
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_round(x, &z);
+  char res1[1000], res2[1000] = "95008 0 0 0";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_round_2) {
-s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
-s21_setScale(&x, 1);
-s21_decimal z = {{0, 0, 0, 0}};
-s21_round(x, &z);
-char res1[1000], res2[1000] = "9501 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
+  s21_setScale(&x, 1);
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_round(x, &z);
+  char res1[1000], res2[1000] = "9501 0 0 0";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_round_3) {
-s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
-s21_setScale(&x, 2);
-s21_decimal z = {{0, 0, 0, 0}};
-s21_round(x, &z);
-char res1[1000], res2[1000] = "950 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
+  s21_setScale(&x, 2);
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_round(x, &z);
+  char res1[1000], res2[1000] = "950 0 0 0";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_round_4) {
-s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
-s21_setScale(&x, 4);
-s21_decimal z = {{0, 0, 0, 0}};
-s21_round(x, &z);
-char res1[1000], res2[1000] = "10 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
+  s21_setScale(&x, 4);
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_round(x, &z);
+  char res1[1000], res2[1000] = "10 0 0 0";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_round_5) {
-s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
-s21_setScale(&x, 5);
-s21_decimal z = {{0, 0, 0, 0}};
-s21_round(x, &z);
-char res1[1000], res2[1000] = "1 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
+  s21_setScale(&x, 5);
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_round(x, &z);
+  char res1[1000], res2[1000] = "1 0 0 0";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_round_6) {
-s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
-s21_setScale(&x, 6);
-s21_decimal z = {{0, 0, 0, 0}};
-s21_round(x, &z);
-char res1[1000], res2[1000] = "0 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{95008, 0, 0, 0b00000000000000000000000000000000}};
+  s21_setScale(&x, 6);
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_round(x, &z);
+  char res1[1000], res2[1000] = "0 0 0 0";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_round_7) {
-s21_decimal x = {{95008, 0, 0, 0b10000000000000000000000000000000}};
-s21_setScale(&x, 0);
-s21_decimal z = {{0, 0, 0, 0}};
-s21_round(x, &z);
-char res1[1000], res2[1000] = "95008 0 0 2147483648";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{95008, 0, 0, 0b10000000000000000000000000000000}};
+  s21_setScale(&x, 0);
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_round(x, &z);
+  char res1[1000], res2[1000] = "95008 0 0 2147483648";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_round_8) {
-s21_decimal x = {{95008, 0, 0, 0b10000000000000000000000000000000}};
-s21_setScale(&x, 1);
-s21_decimal z = {{0, 0, 0, 0}};
-s21_round(x, &z);
-char res1[1000], res2[1000] = "9501 0 0 2147483648";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{95008, 0, 0, 0b10000000000000000000000000000000}};
+  s21_setScale(&x, 1);
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_round(x, &z);
+  char res1[1000], res2[1000] = "9501 0 0 2147483648";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_round_9) {
-s21_decimal x = {{95008, 0, 0, 0b10000000000000000000000000000000}};
-s21_setScale(&x, 2);
-s21_decimal z = {{0, 0, 0, 0}};
-s21_round(x, &z);
-char res1[1000], res2[1000] = "950 0 0 2147483648";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{95008, 0, 0, 0b10000000000000000000000000000000}};
+  s21_setScale(&x, 2);
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_round(x, &z);
+  char res1[1000], res2[1000] = "950 0 0 2147483648";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_round_10) {
-s21_decimal x = {{95008, 0, 0, 0b10000000000000000000000000000000}};
-s21_setScale(&x, 4);
-s21_decimal z = {{0, 0, 0, 0}};
-s21_round(x, &z);
-char res1[1000], res2[1000] = "10 0 0 2147483648";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{95008, 0, 0, 0b10000000000000000000000000000000}};
+  s21_setScale(&x, 4);
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_round(x, &z);
+  char res1[1000], res2[1000] = "10 0 0 2147483648";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_round_11) {
-s21_decimal x = {{95008, 0, 0, 0b10000000000000000000000000000000}};
-s21_setScale(&x, 5);
-s21_decimal z = {{0, 0, 0, 0}};
-s21_round(x, &z);
-char res1[1000], res2[1000] = "1 0 0 2147483648";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{95008, 0, 0, 0b10000000000000000000000000000000}};
+  s21_setScale(&x, 5);
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_round(x, &z);
+  char res1[1000], res2[1000] = "1 0 0 2147483648";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_round_12) {
-s21_decimal x = {{95008, 0, 0, 0b10000000000000000000000000000000}};
-s21_setScale(&x, 6);
-s21_decimal z = {{0, 0, 0, 0}};
-s21_round(x, &z);
-char res1[1000], res2[1000] = "0 0 0 2147483648";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{95008, 0, 0, 0b10000000000000000000000000000000}};
+  s21_setScale(&x, 6);
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_round(x, &z);
+  char res1[1000], res2[1000] = "0 0 0 2147483648";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_round_1_n) {
-    s21_decimal value_1 = {{7464923, 0, 0, 0}};
-    s21_setScale(&value_1, 5);
-    s21_decimal check = {{75, 0, 0, 0}};
-    s21_decimal result;
-    int return_value = s21_round(value_1, &result);
-    ck_assert_int_eq(s21_is_equal(result, check), 1);
-    ck_assert_int_eq(return_value, OK);
+  s21_decimal value_1 = {{7464923, 0, 0, 0}};
+  s21_setScale(&value_1, 5);
+  s21_decimal check = {{75, 0, 0, 0}};
+  s21_decimal result;
+  int return_value = s21_round(value_1, &result);
+  ck_assert_int_eq(s21_is_equal(result, check), 1);
+  ck_assert_int_eq(return_value, OK);
 }
 END_TEST
 
 START_TEST(s21_round_2_n) {
-    s21_decimal value_1 = {{7444923, 0, 0, 0}};
-    s21_setScale(&value_1, 5);
-    s21_decimal check = {{74, 0, 0, 0}};
-    s21_decimal result;
-    int return_value = s21_round(value_1, &result);
-    ck_assert_int_eq(s21_is_equal(result, check), 1);
-    ck_assert_int_eq(return_value, OK);
+  s21_decimal value_1 = {{7444923, 0, 0, 0}};
+  s21_setScale(&value_1, 5);
+  s21_decimal check = {{74, 0, 0, 0}};
+  s21_decimal result;
+  int return_value = s21_round(value_1, &result);
+  ck_assert_int_eq(s21_is_equal(result, check), 1);
+  ck_assert_int_eq(return_value, OK);
 }
 END_TEST
 
 START_TEST(s21_round_3_n) {
-    s21_decimal value_1 = {{7464923, 0, 0, 0}};
-    s21_setSign(&value_1, 1);
-    s21_setScale(&value_1, 5);
-    s21_decimal check = {{75, 0, 0, 0}};
-    s21_setSign(&check, 1);
-    s21_decimal result;
-    int return_value = s21_round(value_1, &result);
-    ck_assert_int_eq(s21_is_equal(result, check), 1);
-    ck_assert_int_eq(return_value, OK);
+  s21_decimal value_1 = {{7464923, 0, 0, 0}};
+  s21_setSign(&value_1, 1);
+  s21_setScale(&value_1, 5);
+  s21_decimal check = {{75, 0, 0, 0}};
+  s21_setSign(&check, 1);
+  s21_decimal result;
+  int return_value = s21_round(value_1, &result);
+  ck_assert_int_eq(s21_is_equal(result, check), 1);
+  ck_assert_int_eq(return_value, OK);
 }
 END_TEST
 
 START_TEST(s21_round_4_n) {
-    s21_decimal value_1 = {{7444923, 0, 0, 0}};
-    s21_setSign(&value_1, 1);
-    s21_setScale(&value_1, 5);
-    s21_decimal check = {{74, 0, 0, 0}};
-    s21_setSign(&check, 1);
-    s21_decimal result;
-    int return_value = s21_round(value_1, &result);
-    ck_assert_int_eq(s21_is_equal(result, check), 1);
-    ck_assert_int_eq(return_value, OK);
+  s21_decimal value_1 = {{7444923, 0, 0, 0}};
+  s21_setSign(&value_1, 1);
+  s21_setScale(&value_1, 5);
+  s21_decimal check = {{74, 0, 0, 0}};
+  s21_setSign(&check, 1);
+  s21_decimal result;
+  int return_value = s21_round(value_1, &result);
+  ck_assert_int_eq(s21_is_equal(result, check), 1);
+  ck_assert_int_eq(return_value, OK);
 }
 END_TEST
 
@@ -2038,59 +2062,62 @@ START_TEST(floor_3) {
 END_TEST
 
 START_TEST(s21_floor_1) {
-s21_decimal x = {{15008, 0, 0, 0b10000000000000000000000000000000}};
-s21_setScale(&x, 3);
-s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
-s21_floor(x, &z);
-char res1[1000], res2[1000] = "16 0 0 2147483648";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{15008, 0, 0, 0b10000000000000000000000000000000}};
+  s21_setScale(&x, 3);
+  s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
+  s21_floor(x, &z);
+  char res1[1000], res2[1000] = "16 0 0 2147483648";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_floor_2) {
-s21_decimal x = {{15008, 0, 0, 0b00000000000000000000000000000000}};
-s21_setScale(&x, 3);
-s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
-s21_floor(x, &z);
-char res1[1000], res2[1000] = "15 0 0 0";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{15008, 0, 0, 0b00000000000000000000000000000000}};
+  s21_setScale(&x, 3);
+  s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
+  s21_floor(x, &z);
+  char res1[1000], res2[1000] = "15 0 0 0";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_floor_3) {
-s21_decimal x = {{15008, 0, 0, 0b10000000000000000000000000000000}};
-s21_setScale(&x, 10);
-s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
-s21_floor(x, &z);
-char res1[1000], res2[1000] = "1 0 0 2147483648";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
-ck_assert_str_eq(res1, res2);
+  s21_decimal x = {{15008, 0, 0, 0b10000000000000000000000000000000}};
+  s21_setScale(&x, 10);
+  s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
+  s21_floor(x, &z);
+  char res1[1000], res2[1000] = "1 0 0 2147483648";
+  snprintf(res1, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
+           z.bits[2], z.bits[3]);
+  ck_assert_str_eq(res1, res2);
 }
 END_TEST
 
 START_TEST(s21_floor_1_n) {
-    s21_decimal value_1 = {{7444923, 0, 0, 0}};
-    s21_setScale(&value_1, 5);
-    s21_decimal check = {{74, 0, 0, 0}};
-    s21_decimal result;
-    int return_value = s21_floor(value_1, &result);
-    ck_assert_int_eq(s21_is_equal(result, check), 1);
-    ck_assert_int_eq(return_value, OK);
+  s21_decimal value_1 = {{7444923, 0, 0, 0}};
+  s21_setScale(&value_1, 5);
+  s21_decimal check = {{74, 0, 0, 0}};
+  s21_decimal result;
+  int return_value = s21_floor(value_1, &result);
+  ck_assert_int_eq(s21_is_equal(result, check), 1);
+  ck_assert_int_eq(return_value, OK);
 }
 END_TEST
 
 START_TEST(s21_floor_2_n) {
-    s21_decimal value_1 = {{7444923, 0, 0, 0}};
-    s21_setScale(&value_1, 5);
-    s21_setSign(&value_1, 1);
-    s21_decimal check = {{75, 0, 0, 0}};
-    s21_setSign(&check, 1);
-    s21_decimal result;
-    int return_value = s21_floor(value_1, &result);
-    ck_assert_int_eq(s21_is_equal(result, check), 1);
-    ck_assert_int_eq(return_value, OK);
+  s21_decimal value_1 = {{7444923, 0, 0, 0}};
+  s21_setScale(&value_1, 5);
+  s21_setSign(&value_1, 1);
+  s21_decimal check = {{75, 0, 0, 0}};
+  s21_setSign(&check, 1);
+  s21_decimal result;
+  int return_value = s21_floor(value_1, &result);
+  ck_assert_int_eq(s21_is_equal(result, check), 1);
+  ck_assert_int_eq(return_value, OK);
 }
 END_TEST
 
@@ -2526,11 +2553,10 @@ START_TEST(s21_simple_sub_test_7) {
 }
 END_TEST
 
-
 int main(void) {
-  Suite *s1 = suite_create("Core");
-  TCase *tc1_1 = tcase_create("Core");
-  SRunner *sr = srunner_create(s1);
+  Suite* s1 = suite_create("Core");
+  TCase* tc1_1 = tcase_create("Core");
+  SRunner* sr = srunner_create(s1);
   int nf;
 
   suite_add_tcase(s1, tc1_1);
@@ -2557,8 +2583,8 @@ int main(void) {
   tcase_add_test(tc1_1, decimal_mul_8);
   tcase_add_test(tc1_1, decimal_mul_9);
   tcase_add_test(tc1_1, decimal_mul_10);
-  //tcase_add_test(tc1_1, decimal_mul_14);
-  //tcase_add_test(tc1_1, decimal_mul_15);
+  // tcase_add_test(tc1_1, decimal_mul_14);
+  // tcase_add_test(tc1_1, decimal_mul_15);
   tcase_add_test(tc1_1, decimal_mul_16);
 
   tcase_add_test(tc1_1, decimal_sub_1);
@@ -2587,11 +2613,11 @@ int main(void) {
   tcase_add_test(tc1_1, decimal_div_12);
 
   tcase_add_test(tc1_1, decimal_mod_1);
-  //tcase_add_test(tc1_1, decimal_mod_2);
+  // tcase_add_test(tc1_1, decimal_mod_2);
   tcase_add_test(tc1_1, decimal_mod_3);
   tcase_add_test(tc1_1, decimal_mod_4);
   tcase_add_test(tc1_1, decimal_mod_5);
-  //tcase_add_test(tc1_1, decimal_mod_6);
+  // tcase_add_test(tc1_1, decimal_mod_6);
   tcase_add_test(tc1_1, decimal_mod_7);
   tcase_add_test(tc1_1, decimal_mod_8);
 
@@ -2695,12 +2721,12 @@ int main(void) {
   tcase_add_test(tc1_1, s21_truncate_test);
   tcase_add_test(tc1_1, s21_truncate_1);
   tcase_add_test(tc1_1, s21_truncate_2);
-  //tcase_add_test(tc1_1, truncate_0);
+  // tcase_add_test(tc1_1, truncate_0);
   tcase_add_test(tc1_1, truncate_1);
   tcase_add_test(tc1_1, truncate_3);
   tcase_add_test(tc1_1, truncate_4);
 
-  //tcase_add_test(tc1_1, round_0);
+  // tcase_add_test(tc1_1, round_0);
   tcase_add_test(tc1_1, round_test);
   tcase_add_test(tc1_1, s21_round_1);
   tcase_add_test(tc1_1, s21_round_2);

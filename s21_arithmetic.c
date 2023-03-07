@@ -165,7 +165,7 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   return flag;
 }
 
-//деление - закомментить
+// деление
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   int flag = 0;
   s21_decimal val_1 = value_1;
@@ -173,7 +173,6 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   s21_scale_equalization(&val_1, &val_2, 0);
   if (check(value_1, value_2, result) !=
       0) {  // если делит на 0 или 0 делит на что-то
-    // why
   } else {
     int bit = 0;
     int sign_1 = s21_getSign(value_1);  // получаем знак
@@ -216,7 +215,7 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   return flag;
 }
 
-//остаток от деления
+// остаток от деления
 int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   int flag = 0;
   s21_decimal val_1 = value_1;
