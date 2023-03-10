@@ -61,7 +61,7 @@ int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2,
   int res = err_num;
   s21_decimal *left = NULL;
   s21_decimal *right = NULL;
-  s21_decimal remainder = {0};  // остаток
+  s21_decimal remainder = {{0, 0, 0, 0}};  // остаток
   if (s21_getScale(*value_1) >
       s21_getScale(*value_2)) {  // смотрим какой из них больше
     left = value_1;
@@ -77,30 +77,30 @@ int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2,
     s21_decimal ten = {{10, 0, 0, 0}};  // что это и зачем оно
     s21_setSign(left, 0);
     s21_setSign(right, 0);
-    int flag = 0;
+//    int flag = 0;
     while (
         s21_getScale(*left) != s21_getScale(*right) &&  // change right on left
-        s21_last_bit(*right) < 93 && s21_getScale(*right) <= 28 && flag != 1) {
+        s21_last_bit(*right) < 93 && s21_getScale(*right) <= 28) {
       res = OK;  // предпочла б чтоб вместо ок писали 0
       int scale_small = s21_getScale(*right);
       s21_setScale(right, 0);
       res = s21_mul(ten, *right, right);
-      if (res != 0) flag = 1;
+      if (res != 0) break;
       s21_setScale(right, scale_small + 1);
     }
-    flag = 0;
-    while (s21_getScale(*right) != s21_getScale(*left) && flag != 1) {
+//    flag = 0;
+    while (s21_getScale(*right) != s21_getScale(*left)) {
       int res = OK;
       int scale_big = s21_getScale(*left);
       if (s21_getScale(*left) - s21_getScale(*right) == 1) {
         if (left->bits[0] >= 5 && left->bits[0] < 10) {
           left->bits[0] = 1;
           s21_setScale(left, scale_big - 1);
-          flag = 1;
+          break;
         }
       }
       res = s21_integer_division(*left, ten, left, &remainder, 1);
-      if (res != 0) flag = 1;
+      if (res != 0) break;
       s21_setScale(left, scale_big - 1);
     }
     s21_setSign(left, sign1);
@@ -108,6 +108,7 @@ int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2,
   }
   return res;
 }
+
 
 void s21_decl_to_null(s21_decimal *decl) {
   for (int i = 0; i < 128; ++i) {

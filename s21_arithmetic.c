@@ -112,9 +112,9 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
       res = add(left, right, result);
     }
   }
-  if ((s21_getSign(right) == 1) && (s21_getSign(left) == 1)) {
-    s21_negate(*result, result);
-  }
+  // if ((s21_getSign(right) == 1) && (s21_getSign(left) == 1)) {
+  //   s21_negate(*result, result);
+  // }
   return res;
 }
 
@@ -132,11 +132,6 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     s21_setSign(&left, 0);
     s21_setSign(result, singRight);  // установка знака
   }
-  // if ((s21_getSign(value_1) == 1) && (s21_getSign(value_2) == 0)) {
-  //   // s21_setSign(result, singLeft);  // установка знака
-  //   // s21_negate(right, &right);
-  //   // s21_negate(*result, result);
-  // }
   s21_add(left, right, result);  // сложение
   return res;
 }

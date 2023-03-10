@@ -50,12 +50,13 @@ gcov_report: s21_decimal.a
 
 check: s21_decimal.a
 	cppcheck *.h *.c
-	cp ../materials/linters/CPPLINT.cfg CPPLINT.cfg
-	python3 ../materials/linters/cpplint.py --extension=c *.c *.h
+	cp ../materials/linters/.clang-format ../src
+	clang-format -n *.h *.c
 	$(CC) s21_decimal_test.c s21_decimal.a -lcheck
 	$(CC) $(CC_FLAGS) -c s21_decimal_test.c -o test.o
 	$(CC) test.o s21_decimal.a $(TEST_LIBS) -o test
 	CK_FORK=no leaks --atExit -- ./test
+	rm -rf .clang-format
 
 s21_decimal.a: s21_another.o s21_arithmetic.o s21_comparison.o s21_converters.o s21_decimal.o
 	$(CC) -c $(SOURSES)
@@ -66,9 +67,6 @@ clean:
 	rm -rf *.gcda
 	rm -rf *.gcno
 	rm -rf test
-
-lo:
-	for i in `seq 100 $(OP)`;	do ./test; done;
 
 vg: s21_decimal.a
 	CK_FORK=no valgrind --tool=memcheck ./test
