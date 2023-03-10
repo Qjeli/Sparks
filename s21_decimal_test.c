@@ -170,6 +170,24 @@ void add_test_6() {
     printf("%d - must be\n", sum_int);
 }
 
+void add_test_plus_plus_3() {
+    s21_decimal x = {{20, 1, 0, 0b10000000000000000000000000000000}};
+    s21_decimal y = {{21, 0, 0, 0b10000000000000000000000000000000}};
+    s21_decimal z = {{0, 0, 0, 0}};
+    s21_add(x, y, &z);
+
+    float a = 0;
+    float b = 0;
+    float result = 0;
+    s21_from_decimal_to_float(x, &a);
+    s21_from_decimal_to_float(y, &b);
+    s21_from_decimal_to_float(z, &result);
+    
+    printf("%f + %f\n", a, b);
+    printf("%f - result\n", result);
+    // printf("%d - must be\n", sum_int);
+}
+
 void sub_test() {
     int num1 = -11;
     int num2 = 10;
@@ -210,6 +228,6 @@ void mul_test() {
 
 
 int main() {
-    mul_test();
+    add_test_plus_plus_3();
     return 0;
 }
