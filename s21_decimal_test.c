@@ -412,7 +412,7 @@ START_TEST(decimal_mul_10) {
   ck_assert_str_eq(res1, res2);
 }
 END_TEST
-/*
+
 START_TEST(decimal_mul_14) {
 s21_decimal x = {{400, 0, 0, 0b00000000000000000000000000000000}};
 s21_decimal y = {{500, 0, 0, 0b00000000000000000000000000000000}};
@@ -438,7 +438,6 @@ snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1],
 z.bits[2], z.bits[3]); ck_assert_str_eq(res1, res2);
 }
 END_TEST
-*/
 
 START_TEST(decimal_mul_16) {
   s21_decimal src1, src2;
@@ -617,19 +616,19 @@ START_TEST(decimal_div_11) {
 }
 END_TEST
 
-// START_TEST(decimal_div_12) {
-// s21_decimal x = {{5, 0, 50, 0b10000000000000000000000000000000}};
-// s21_decimal y = {{5, 0, 0, 0b10000000000000000000000000000000}};
-// s21_decimal z = {{0, 0, 0, 0}};
-// s21_setScale(&x, 0);
-// s21_setScale(&y, 20);
-// int n1 = 0;
-// n1 = s21_div(x, y, &z);
-// char res1[1000], res2[1000] = "0 0 0 0";
-// snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1],
-// z.bits[2], z.bits[3]); ck_assert_str_eq(res1, res2); ck_assert_int_eq(n1, 3);
-// }
-// END_TEST
+START_TEST(decimal_div_12) {
+s21_decimal x = {{5, 0, 50, 0b10000000000000000000000000000000}};
+s21_decimal y = {{5, 0, 0, 0b10000000000000000000000000000000}};
+s21_decimal z = {{0, 0, 0, 0}};
+s21_setScale(&x, 0);
+s21_setScale(&y, 20);
+int n1 = 0;
+n1 = s21_div(x, y, &z);
+char res1[1000], res2[1000] = "0 0 0 0";
+snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1],
+z.bits[2], z.bits[3]); ck_assert_str_eq(res1, res2); ck_assert_int_eq(n1, 3);
+}
+END_TEST
 
 /* ----------------------------------------------------------------
  * s21_mod
@@ -651,21 +650,19 @@ START_TEST(decimal_mod_1) {
 }
 END_TEST
 
-/*
-START_TEST(decimal_mod_2) {
-s21_decimal x = {{150000008, 0, 500000000, 0b00000000000000000000000000000000}};
-s21_decimal y = {{1, 0, 0, 0b00000000000000000000000000000000}};
-s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
-s21_setScale(&x, 0);
-s21_setScale(&y, 3);
-int n1 = 0;
-n1 = s21_mod(x, y, &z);
-char res1[1000], res2[1000] = "0 0 0 196608";
-snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1],
-z.bits[2], z.bits[3]); ck_assert_str_eq(res1, res2); ck_assert_int_eq(n1, 0);
-}
-END_TEST
-*/
+// START_TEST(decimal_mod_2) {
+// s21_decimal x = {{150000008, 0, 500000000, 0b00000000000000000000000000000000}};
+// s21_decimal y = {{1, 0, 0, 0b00000000000000000000000000000000}};
+// s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
+// s21_setScale(&x, 0);
+// s21_setScale(&y, 3);
+// int n1 = 0;
+// n1 = s21_mod(x, y, &z);
+// char res1[1000], res2[1000] = "0 0 0 196608";
+// snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1],
+// z.bits[2], z.bits[3]); ck_assert_str_eq(res1, res2); ck_assert_int_eq(n1, 0);
+// }
+// END_TEST
 
 START_TEST(decimal_mod_3) {
   s21_decimal x = {{91, 0, 0, 0}};
@@ -715,7 +712,6 @@ START_TEST(decimal_mod_5) {
 }
 END_TEST
 
-/*
 START_TEST(decimal_mod_6) {
 s21_decimal x = {{91, 0, 0, 0}};
 s21_decimal y = {{5, 0, 0, 0}};
@@ -729,7 +725,6 @@ snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1],
 z.bits[2], z.bits[3]); ck_assert_str_eq(res1, res2); ck_assert_int_eq(n1, 2);
 }
 END_TEST
-*/
 
 START_TEST(decimal_mod_7) {
   s21_decimal x = {{125, 0, 0, 0}};
@@ -2595,8 +2590,8 @@ int main(void) {
   tcase_add_test(tc1_1, decimal_mul_8);
   tcase_add_test(tc1_1, decimal_mul_9);
   tcase_add_test(tc1_1, decimal_mul_10);
-  // tcase_add_test(tc1_1, decimal_mul_14);
-  // tcase_add_test(tc1_1, decimal_mul_15);
+  tcase_add_test(tc1_1, decimal_mul_14);
+  tcase_add_test(tc1_1, decimal_mul_15);
   tcase_add_test(tc1_1, decimal_mul_16);
 
   tcase_add_test(tc1_1, decimal_div_1);
@@ -2610,14 +2605,14 @@ int main(void) {
   tcase_add_test(tc1_1, decimal_div_9);
   tcase_add_test(tc1_1, decimal_div_10);
   tcase_add_test(tc1_1, decimal_div_11);
-  // tcase_add_test(tc1_1, decimal_div_12);
+  tcase_add_test(tc1_1, decimal_div_12);
 
   tcase_add_test(tc1_1, decimal_mod_1);
   // tcase_add_test(tc1_1, decimal_mod_2);
   tcase_add_test(tc1_1, decimal_mod_3);
   tcase_add_test(tc1_1, decimal_mod_4);
   tcase_add_test(tc1_1, decimal_mod_5);
-  // tcase_add_test(tc1_1, decimal_mod_6);
+  tcase_add_test(tc1_1, decimal_mod_6);
   tcase_add_test(tc1_1, decimal_mod_7);
   tcase_add_test(tc1_1, decimal_mod_8);
 
