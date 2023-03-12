@@ -122,6 +122,7 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 }
 
 // вычитание
+/*
 // fails 26 (49 with +52 extra) tests in my branch
 int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   int res = OK;
@@ -138,6 +139,64 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     s21_setSign(result, singRight);  // установка знака
   }
   s21_add(left, right, result);  // сложение
+  return res;
+}
+*/
+int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+  int res = 0, flag = 0;
+  s21_init_decimal(result);
+  s21_scale_equalization(&value_1, &value_2, 0);
+  int sign1 = s21_getBit(value_1, 127);
+  int sign2 = s21_getSign(value_2);
+  if (sign1 != sign2) {
+    if (sign1 == 0) flag = 1;
+    if (sign2 == 0) flag = 2;
+  }
+  if (flag == 0) {
+    if (sign1 == 0) {
+      if (s21_is_less(value_1, value_2)) {
+        s21_setSign(result, 1);
+        s21_decimal hold = value_1;
+        value_1 = value_2;
+        value_2 = hold;
+      }
+      for (int i = 0; i < 96; i++) {
+        int tmp1 = s21_getBit(value_1, i);
+        int tmp2 = s21_getBit(value_2, i);
+        int tmp_res = tmp1 - tmp2;
+        if (tmp_res == 0) {
+          s21_setBit(result, i, 0);
+          continue;
+        } else if (tmp_res == 1) {
+          s21_setBit(result, i, 1);
+        } else if (tmp_res == -1) {
+          int n = i + 1;
+          while (s21_getBit(value_1, n) != 1) {
+            s21_setBit(&value_1, n, 1);
+            n++;
+          }
+          s21_setBit(&value_1, n, 0);
+          s21_setBit(result, i, 1);
+        }
+      }
+      s21_setScale(result, s21_getScale(value_1));
+    } else if (sign1 == 1) {
+      s21_setBit(&value_1, 127, 0);
+      s21_setBit(&value_2, 127, 0);
+      res = s21_sub(value_2, value_1, result);
+    }
+  } else if (flag == 1) {
+    s21_setBit(&value_2, 127, 0);
+    res = s21_add(value_1, value_2, result);
+  } else if (flag == 2) {
+    s21_setBit(&value_2, 127, 1);
+    res = s21_add(value_1, value_2, result);
+  }
+  if (s21_getScale(*result) > 28 ||
+      (s21_getScale(*result) == 28 && result->bits[0] == 0 &&
+       result->bits[1] == 0 && result->bits[2] == 0))
+    res = 2;
+  if (res != 0) s21_init_decimal(result);
   return res;
 }
 

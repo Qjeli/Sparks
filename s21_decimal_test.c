@@ -18,6 +18,61 @@ float f, z, result;
   printf("resDec %u %u %u %u \nsign: %d\nfromDecToFloat %lf\nres %lf %lf\n", res.bits[0], res.bits[1],res.bits[2],res.bits[3],s21_getSign(res),result, f, z);
 }
 
+void floor_1() {
+  s21_decimal val = {{2, 0, 0, ~(UINT_MAX / 2)}};  // 2147483648
+  s21_decimal res = {0};
+  s21_floor(val, &res);
+  float fres = 0;
+  float value_fl = 0;
+  s21_from_decimal_to_float(res, &fres);
+  s21_from_decimal_to_float(val, &value_fl);
+  printf("%f - initial value\n", value_fl);
+  printf("%f - result\n", fres);
+  printf("-2 - must be\n");
+}
+
+void floor_2() {
+  s21_decimal val = {{2, 0, 0, ~(UINT_MAX / 2)}};  // 2147483648
+  s21_decimal res = {0};
+  s21_setScale(&val, 5);
+  s21_floor(val, &res);
+  float fres = 0;
+  float value_fl = 0;
+  s21_from_decimal_to_float(res, &fres);
+  s21_from_decimal_to_float(val, &value_fl);
+  printf("%f - initial value\n", value_fl);
+  printf("%f - result\n", fres);
+  printf("-1 - must be\n");
+}
+
+void s21_floor_1() {
+  s21_decimal val = {{15008, 0, 0, 0b10000000000000000000000000000000}};
+  s21_decimal res1 = {{0, 0, 0, 0b00000000000000000000000000000000}};
+  s21_decimal res2 = {{16, 0, 0, 2147483648}};
+  s21_setScale(&val, 3);
+  s21_floor(val, &res1);
+  float fres = 0;
+  float ores = 0;
+  float value_fl = 0;
+  s21_from_decimal_to_float(res1, &fres);
+  s21_from_decimal_to_float(res2, &ores);
+  s21_from_decimal_to_float(val, &value_fl);
+  printf("%f - initial value\n", value_fl);
+  printf("%f - result\n", fres);
+  printf("%f - must be\n", ores);
+}
+
+void test_floor() {
+    float a = -4;
+    s21_decimal fl_d, fl_dr;
+    s21_from_float_to_decimal(a, &fl_d);
+    s21_floor(fl_d, &fl_dr);
+    float result;
+    s21_from_decimal_to_float(fl_dr, &result);
+    printf("%f - result\n", result);
+    printf("-4 - must be\n");
+}
+
 void sub_test() {
     int num1 = -11;
     int num2 = 10;
@@ -163,6 +218,6 @@ void decimal_sub_11() {
 }
 
 int main() {
-    decimal_sub_8();
+    test_floor();
     return 0;
 }
