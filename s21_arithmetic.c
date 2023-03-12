@@ -49,6 +49,7 @@ int add(s21_decimal left, s21_decimal right, s21_decimal *result) {
   return res;
 }
 
+// used in s21_add
 void inverse(s21_decimal *value) {
   value->bits[0] = ~value->bits[0];
   value->bits[1] = ~value->bits[1];
@@ -80,7 +81,7 @@ int is_Null(s21_decimal value) {
   return res;
 }
 
-// used in s21_div
+// used in s21_mod
 int check(s21_decimal val_1, s21_decimal val_2, s21_decimal *result) {
   int flag = 0;
   if (val_2.bits[0] == 0 && val_2.bits[1] == 0 &&
@@ -94,6 +95,8 @@ int check(s21_decimal val_1, s21_decimal val_2, s21_decimal *result) {
 }
 
 /// | - - - - - - - - - ariphmetic - - - - - - - - - - - |
+
+// сложение
 int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   // считаем что одинаковый размер
   int res = OK;
@@ -118,6 +121,8 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   return res;
 }
 
+// вычитание
+// fails 26 (49 with +52 extra) tests in my branch
 int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   int res = OK;
   s21_decimal left = value_1;
@@ -162,52 +167,46 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 
 // деление
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-  int flag = 0;
-  s21_decimal val_1 = value_1;
-  s21_decimal val_2 = value_2;
-  s21_scale_equalization(&val_1, &val_2, 0);
-  if (check(value_1, value_2, result) !=
-      0) {  // если делит на 0 или 0 делит на что-то
-  } else {
-    int bit = 0;
-    int sign_1 = s21_getSign(value_1);  // получаем знак
-    int sign_2 = s21_getSign(value_2);
-    if (sign_1 != sign_2) {
-      s21_setSign(result, 1);
-    } else {
-      s21_setSign(result, 0);
-    }
-
-    s21_setSign(&val_1, 0);  // зануляем знак
-    s21_setSign(&val_2, 0);
-
-    while ((s21_is_greater_or_equal(val_2, val_1)) &&
-           (bit == 0)) {          // меньше и не равен
-      s21_shift_left(&val_1, 1);  // посмотрим как сработает
-      bit =
-          s21_getBit(val_2, 95);  // берем самый последний бит. он должен быть 1
-    }
-    while (!(s21_is_greater(val_2, val_1)) &&
-           (bit == 0)) {          // меньше и не равен
-      s21_shift_left(&val_2, 1);  // посмотрим как сработает
-      bit =
-          s21_getBit(val_2, 95);  // берем самый последний бит. он должен быть 1
-    }
-    while (val_2.bits[0] > 0) {
-      s21_shift_left(result, 1);
-      if (s21_is_greater(val_2, val_1)) {
-        s21_setBit(result, 0, 0);
-      } else {
-        s21_sub(val_1, val_2, &val_1);  // непосредственно производим вычитание
-        s21_setBit(result, 0, 1);
-      }
-      if (s21_is_greater(val_2, val_1)) {
-        s21_shift_right(&val_2, 1);
-      }
+  s21_decimal remainder = {{1, 0, 0, 0}};
+  s21_decimal tmp_res = {{0, 0, 0, 0}};
+  s21_decimal zero = {{0, 0, 0, 0}};
+  int res = 0, count = 0;
+  int scale1 = s21_getScale(value_1), scale2 = s21_getScale(value_2),
+      scale = 0;
+  int sign1 = s21_getSign(value_1), sign2 = s21_getSign(value_2);
+  s21_setSign(&value_1, 0);
+  s21_setSign(&value_2, 0);
+  (scale1 >= scale2) ? scale = (scale1 - scale2)
+                     : s21_scale_equalization(&value_1, &value_2, 0);
+  if (s21_is_equal(value_2, zero)) res = s21_NAN;
+  if (s21_is_greater(value_2, value_1) && scale == 0) {
+    s21_decimal ten = {{10, 0, 0, 0}};
+    while (s21_is_greater(value_2, value_1)) {
+      s21_mul(value_1, ten, &value_1);
+      scale++;
+      if (scale == 28) break;
     }
   }
-  s21_setScale(result, s21_getScale(value_1));
-  return flag;
+  s21_setScale(&value_1, scale);
+  while (count < 10) {
+    *result = tmp_res;
+    res = s21_integer_division(value_1, value_2, &tmp_res, &remainder, 0);
+    if (s21_getScale(tmp_res) == 0 && s21_last_bit(tmp_res) > 93) {
+      res = TOO_MUCH_OR_INF;
+      break;
+    }
+    s21_add(tmp_res, *result, &tmp_res);
+    if (remainder.bits[0] == 0 && remainder.bits[1] == 0 &&
+        remainder.bits[2] == 0)
+      break;
+    value_1 = remainder;
+    s21_setScale(&value_1, scale + count);
+    count++;
+  }
+  *result = tmp_res;
+  (sign1 != sign2) ? s21_setSign(result, 1) : NULL;
+  if (res != 0) s21_init_decimal(result);
+  return res;
 }
 
 // остаток от деления
@@ -247,3 +246,15 @@ int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   if (flag == 4) flag = 0;
   return flag;
 }
+
+/*
+int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+  s21_decimal tmp = {{0, 0, 0, 0}};
+  int res = OK;
+  res = s21_div(value_1, value_2, &tmp);
+  if (res == OK) res = s21_truncate(tmp, &tmp);
+  if (res == OK) res = s21_mul(tmp, value_2, &tmp);
+  if (res == OK) res = s21_sub(value_1, tmp, result);
+  return res;
+}
+*/
