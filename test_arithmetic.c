@@ -5536,96 +5536,6 @@ int main(void) {
   tcase_add_test(tc1_1, add_test_19);
   tcase_add_test(tc1_1, add_test_20);
 
-  // s21_mul - умножение
-  tcase_add_test(tc1_1, decimal_mul_1);
-  tcase_add_test(tc1_1, decimal_mul_2);
-  tcase_add_test(tc1_1, decimal_mul_3);
-  tcase_add_test(tc1_1, decimal_mul_4);
-  tcase_add_test(tc1_1, decimal_mul_5);
-  tcase_add_test(tc1_1, decimal_mul_6);
-  tcase_add_test(tc1_1, decimal_mul_7);
-  tcase_add_test(tc1_1, decimal_mul_8);
-  tcase_add_test(tc1_1, decimal_mul_9);
-  tcase_add_test(tc1_1, decimal_mul_10);
-  // tcase_add_test(tc1_1, decimal_mul_14);
-  // tcase_add_test(tc1_1, decimal_mul_15);
-  tcase_add_test(tc1_1, decimal_mul_16);
-
-  tcase_add_test(tc1_1, mul_test_1);
-  tcase_add_test(tc1_1, mul_test_2);
-  tcase_add_test(tc1_1, mul_test_3);
-  tcase_add_test(tc1_1, mul_test_4);
-  tcase_add_test(tc1_1, mul_test_5);
-  tcase_add_test(tc1_1, mul_test_6);
-  tcase_add_test(tc1_1, mul_test_7);
-  tcase_add_test(tc1_1, mul_test_8);
-
-  tcase_add_test(tc1_1, mul_0);
-  tcase_add_test(tc1_1, mul_1);
-  tcase_add_test(tc1_1, mul_2);
-  tcase_add_test(tc1_1, mul_3);
-  tcase_add_test(tc1_1, mul_4);
-  tcase_add_test(tc1_1, mul_5);
-  tcase_add_test(tc1_1, mul_6);
-  tcase_add_test(tc1_1, mul_7);
-  tcase_add_test(tc1_1, mul_8);
-  tcase_add_test(tc1_1, mul_9);
-  tcase_add_test(tc1_1, mul_10);
-  tcase_add_test(tc1_1, mul_11);
-  tcase_add_test(tc1_1, mul_12);
-  tcase_add_test(tc1_1, mul_13);
-  tcase_add_test(tc1_1, mul_14);
-
-  tcase_add_test(tc1_1, s21_mul_1_u);
-  tcase_add_test(tc1_1, s21_mul_2_u);
-  tcase_add_test(tc1_1, s21_mul_3_u);
-
-/*
-  tcase_add_test(tc1_1, s21_mul_1);
-  tcase_add_test(tc1_1, s21_mul_2);
-  tcase_add_test(tc1_1, s21_mul_3);
-  tcase_add_test(tc1_1, s21_mul_4);
-  tcase_add_test(tc1_1, s21_mul_5);
-  tcase_add_test(tc1_1, s21_mul_6);
-  tcase_add_test(tc1_1, s21_mul_7);
-  tcase_add_test(tc1_1, s21_mul_8);
-  tcase_add_test(tc1_1, s21_mul_9);
-  tcase_add_test(tc1_1, s21_mul_10);
-  tcase_add_test(tc1_1, s21_mul_11);
-  tcase_add_test(tc1_1, s21_mul_12);
-  tcase_add_test(tc1_1, s21_mul_13);
-  tcase_add_test(tc1_1, s21_mul_14);
-  tcase_add_test(tc1_1, s21_mul_15);
-  tcase_add_test(tc1_1, s21_mul_16);
-  tcase_add_test(tc1_1, s21_mul_17);
-  tcase_add_test(tc1_1, s21_mul_18);
-  tcase_add_test(tc1_1, s21_mul_19);
-  tcase_add_test(tc1_1, s21_mul_20);
-  tcase_add_test(tc1_1, s21_mul_21);
-  tcase_add_test(tc1_1, s21_mul_22);
-  tcase_add_test(tc1_1, s21_mul_23);
-  tcase_add_test(tc1_1, s21_mul_24);
-  tcase_add_test(tc1_1, s21_mul_25);
-  tcase_add_test(tc1_1, s21_mul_26);
-  tcase_add_test(tc1_1, s21_mul_27);
-  tcase_add_test(tc1_1, s21_mul_28);
-  tcase_add_test(tc1_1, s21_mul_29);
-  tcase_add_test(tc1_1, s21_mul_30);
-  tcase_add_test(tc1_1, s21_mul_31);
-  tcase_add_test(tc1_1, s21_mul_32);
-  tcase_add_test(tc1_1, s21_mul_33);
-  tcase_add_test(tc1_1, s21_mul_34);
-  tcase_add_test(tc1_1, s21_mul_35);
-  tcase_add_test(tc1_1, s21_mul_36);
-  tcase_add_test(tc1_1, s21_mul_37);
-  tcase_add_test(tc1_1, s21_mul_38);
-  tcase_add_test(tc1_1, s21_mul_39);
-  tcase_add_test(tc1_1, s21_mul_40);
-  tcase_add_test(tc1_1, s21_mul_49);
-  tcase_add_test(tc1_1, s21_mul_50);
-  tcase_add_test(tc1_1, s21_mul_51);
-*/
-
   // s21_sub - вычитание
   tcase_add_test(tc1_1, decimal_sub_1);
   tcase_add_test(tc1_1, decimal_sub_2);
@@ -5749,6 +5659,96 @@ int main(void) {
   tcase_add_test(tc1_1, s21_sub_51);
   tcase_add_test(tc1_1, s21_sub_52);
   tcase_add_test(tc1_1, s21_sub_53);
+*/
+
+  // s21_mul - умножение
+  tcase_add_test(tc1_1, decimal_mul_1);
+  tcase_add_test(tc1_1, decimal_mul_2);
+  tcase_add_test(tc1_1, decimal_mul_3);
+  tcase_add_test(tc1_1, decimal_mul_4);
+  tcase_add_test(tc1_1, decimal_mul_5);
+  tcase_add_test(tc1_1, decimal_mul_6);
+  tcase_add_test(tc1_1, decimal_mul_7);
+  tcase_add_test(tc1_1, decimal_mul_8);
+  tcase_add_test(tc1_1, decimal_mul_9);
+  tcase_add_test(tc1_1, decimal_mul_10);
+  // tcase_add_test(tc1_1, decimal_mul_14);
+  // tcase_add_test(tc1_1, decimal_mul_15);
+  tcase_add_test(tc1_1, decimal_mul_16);
+
+  tcase_add_test(tc1_1, mul_test_1);
+  tcase_add_test(tc1_1, mul_test_2);
+  tcase_add_test(tc1_1, mul_test_3);
+  tcase_add_test(tc1_1, mul_test_4);
+  tcase_add_test(tc1_1, mul_test_5);
+  tcase_add_test(tc1_1, mul_test_6);
+  tcase_add_test(tc1_1, mul_test_7);
+  tcase_add_test(tc1_1, mul_test_8);
+
+  tcase_add_test(tc1_1, mul_0);
+  tcase_add_test(tc1_1, mul_1);
+  tcase_add_test(tc1_1, mul_2);
+  tcase_add_test(tc1_1, mul_3);
+  tcase_add_test(tc1_1, mul_4);
+  tcase_add_test(tc1_1, mul_5);
+  tcase_add_test(tc1_1, mul_6);
+  tcase_add_test(tc1_1, mul_7);
+  tcase_add_test(tc1_1, mul_8);
+  tcase_add_test(tc1_1, mul_9);
+  tcase_add_test(tc1_1, mul_10);
+  tcase_add_test(tc1_1, mul_11);
+  tcase_add_test(tc1_1, mul_12);
+  tcase_add_test(tc1_1, mul_13);
+  tcase_add_test(tc1_1, mul_14);
+
+  tcase_add_test(tc1_1, s21_mul_1_u);
+  tcase_add_test(tc1_1, s21_mul_2_u);
+  tcase_add_test(tc1_1, s21_mul_3_u);
+
+/*
+  tcase_add_test(tc1_1, s21_mul_1);
+  tcase_add_test(tc1_1, s21_mul_2);
+  tcase_add_test(tc1_1, s21_mul_3);
+  tcase_add_test(tc1_1, s21_mul_4);
+  tcase_add_test(tc1_1, s21_mul_5);
+  tcase_add_test(tc1_1, s21_mul_6);
+  tcase_add_test(tc1_1, s21_mul_7);
+  tcase_add_test(tc1_1, s21_mul_8);
+  tcase_add_test(tc1_1, s21_mul_9);
+  tcase_add_test(tc1_1, s21_mul_10);
+  tcase_add_test(tc1_1, s21_mul_11);
+  tcase_add_test(tc1_1, s21_mul_12);
+  tcase_add_test(tc1_1, s21_mul_13);
+  tcase_add_test(tc1_1, s21_mul_14);
+  tcase_add_test(tc1_1, s21_mul_15);
+  tcase_add_test(tc1_1, s21_mul_16);
+  tcase_add_test(tc1_1, s21_mul_17);
+  tcase_add_test(tc1_1, s21_mul_18);
+  tcase_add_test(tc1_1, s21_mul_19);
+  tcase_add_test(tc1_1, s21_mul_20);
+  tcase_add_test(tc1_1, s21_mul_21);
+  tcase_add_test(tc1_1, s21_mul_22);
+  tcase_add_test(tc1_1, s21_mul_23);
+  tcase_add_test(tc1_1, s21_mul_24);
+  tcase_add_test(tc1_1, s21_mul_25);
+  tcase_add_test(tc1_1, s21_mul_26);
+  tcase_add_test(tc1_1, s21_mul_27);
+  tcase_add_test(tc1_1, s21_mul_28);
+  tcase_add_test(tc1_1, s21_mul_29);
+  tcase_add_test(tc1_1, s21_mul_30);
+  tcase_add_test(tc1_1, s21_mul_31);
+  tcase_add_test(tc1_1, s21_mul_32);
+  tcase_add_test(tc1_1, s21_mul_33);
+  tcase_add_test(tc1_1, s21_mul_34);
+  tcase_add_test(tc1_1, s21_mul_35);
+  tcase_add_test(tc1_1, s21_mul_36);
+  tcase_add_test(tc1_1, s21_mul_37);
+  tcase_add_test(tc1_1, s21_mul_38);
+  tcase_add_test(tc1_1, s21_mul_39);
+  tcase_add_test(tc1_1, s21_mul_40);
+  tcase_add_test(tc1_1, s21_mul_49);
+  tcase_add_test(tc1_1, s21_mul_50);
+  tcase_add_test(tc1_1, s21_mul_51);
 */
 
   // s21_div - деление

@@ -163,6 +163,6 @@ void decimal_sub_11() {
 }
 
 int main() {
-    decimal_sub_11();
+    decimal_sub_8();
     return 0;
 }
