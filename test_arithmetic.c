@@ -3117,7 +3117,7 @@ snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2]
 ck_assert_str_eq(res1, res2);
 }
 END_TEST
-/*
+
 START_TEST(decimal_mul_14) {
 s21_decimal x = {{400, 0, 0, 0b00000000000000000000000000000000}};
 s21_decimal y = {{500, 0, 0, 0b00000000000000000000000000000000}};
@@ -3143,7 +3143,6 @@ snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2]
 ck_assert_str_eq(res1, res2);
 }
 END_TEST
-*/
 
 START_TEST(decimal_mul_16) {
 s21_decimal src1, src2;
@@ -5139,7 +5138,7 @@ ck_assert_str_eq(res1, res2);
 ck_assert_int_eq(n1, 0);
 }
 END_TEST
-/*
+
 START_TEST(mod_2) {
 s21_decimal x = {{150000008, 0, 500000000, 0b00000000000000000000000000000000}};
 s21_decimal y = {{1, 0, 0, 0b00000000000000000000000000000000}};
@@ -5154,7 +5153,6 @@ ck_assert_str_eq(res1, res2);
 ck_assert_int_eq(n1, 0);
 }
 END_TEST
-*/
 
 START_TEST(mod_3) {
 s21_decimal x = {{91, 0, 0, 0}};
@@ -5200,7 +5198,7 @@ ck_assert_str_eq(res1, res2);
 ck_assert_int_eq(n1, 3);
 }
 END_TEST
-/*
+
 START_TEST(mod_6) {
 s21_decimal x = {{91, 0, 0, 0}};
 s21_decimal y = {{5, 0, 0, 0}};
@@ -5215,7 +5213,6 @@ ck_assert_str_eq(res1, res2);
 ck_assert_int_eq(n1, 2);
 }
 END_TEST
-*/
 
 START_TEST(mod_7) {
 s21_decimal x = {{125, 0, 0, 0}};
@@ -5672,8 +5669,8 @@ int main(void) {
   tcase_add_test(tc1_1, decimal_mul_8);
   tcase_add_test(tc1_1, decimal_mul_9);
   tcase_add_test(tc1_1, decimal_mul_10);
-  // tcase_add_test(tc1_1, decimal_mul_14);
-  // tcase_add_test(tc1_1, decimal_mul_15);
+  tcase_add_test(tc1_1, decimal_mul_14);
+  tcase_add_test(tc1_1, decimal_mul_15);
   tcase_add_test(tc1_1, decimal_mul_16);
 
   tcase_add_test(tc1_1, mul_test_1);
@@ -5794,11 +5791,11 @@ int main(void) {
 
   // s21_mod - остаток от деления
   tcase_add_test(tc1_1, mod_1);
-  // tcase_add_test(tc1_1, mod_2);
+  tcase_add_test(tc1_1, mod_2);
   tcase_add_test(tc1_1, mod_3);
   tcase_add_test(tc1_1, mod_4);
   tcase_add_test(tc1_1, mod_5);
-  // tcase_add_test(tc1_1, mod_6);
+  tcase_add_test(tc1_1, mod_6);
   tcase_add_test(tc1_1, mod_7);
   tcase_add_test(tc1_1, mod_8);
 

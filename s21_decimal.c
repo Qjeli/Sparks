@@ -77,7 +77,7 @@ int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2,
     s21_decimal ten = {{10, 0, 0, 0}};  // что это и зачем оно
     s21_setSign(left, 0);
     s21_setSign(right, 0);
-//    int flag = 0;
+    //    int flag = 0;
     while (
         s21_getScale(*left) != s21_getScale(*right) &&  // change right on left
         s21_last_bit(*right) < 93 && s21_getScale(*right) <= 28) {
@@ -88,7 +88,7 @@ int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2,
       if (res != 0) break;
       s21_setScale(right, scale_small + 1);
     }
-//    flag = 0;
+    //    flag = 0;
     while (s21_getScale(*right) != s21_getScale(*left)) {
       int res = OK;
       int scale_big = s21_getScale(*left);
@@ -108,7 +108,6 @@ int s21_scale_equalization(s21_decimal *value_1, s21_decimal *value_2,
   }
   return res;
 }
-
 
 void s21_decl_to_null(s21_decimal *decl) {
   for (int i = 0; i < 128; ++i) {

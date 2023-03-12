@@ -173,6 +173,29 @@ void div_test_f() {
   printf("%f - must be\n", ori_fl);
 }
 
+void mod_2() {
+    s21_decimal x = {{150000008, 0, 500000000, 0b00000000000000000000000000000000}};
+    s21_decimal y = {{1, 0, 0, 0b00000000000000000000000000000000}};
+    s21_decimal z = {{0, 0, 0, 0b00000000000000000000000000000000}};
+    s21_decimal r = {{0, 0, 0, 196608}};  // res2
+    s21_setScale(&x, 0);
+    s21_setScale(&y, 3);
+    s21_mod(x, y, &z);
+
+    float a = 0;
+    float b = 0;
+    float res1 = 0;
+    float res2 = 0;
+    s21_from_decimal_to_float(x, &a);
+    s21_from_decimal_to_float(y, &b);
+    s21_from_decimal_to_float(z, &res1);
+    s21_from_decimal_to_float(r, &res2);
+    
+    printf("%f / %f\n", a, b);
+    printf("%f - result\n", res1);
+    printf("%f - must be\n", res2);
+}
+
 void decimal_sub_8() {
     s21_decimal x = {{2, 0, 0, 0b10000000000000000000000000000000}};
     s21_decimal y = {{1, 0, 0, 0b00000000000000000000000000000000}};
@@ -218,6 +241,6 @@ void decimal_sub_11() {
 }
 
 int main() {
-    test_floor();
+    mod_2();
     return 0;
 }
