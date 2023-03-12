@@ -522,7 +522,7 @@ s21_decimal x = {{2, 0, 0, 0b10000000000000000000000000000000}};
 s21_decimal y = {{1, 0, 0, 0b00000000000000000000000000000000}};
 s21_decimal z = {{0, 0, 0, 0}};
 s21_sub(x, y, &z);
-char res1[1000], res2[1000] = "3 0 0 2147483648";  // ...
+char res1[1000], res2[1000] = "3 0 0 2147483648";  // 3 0 0 0
 snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
 ck_assert_str_eq(res1, res2);
 }
@@ -535,7 +535,7 @@ s21_setScale(&x, 5);
 s21_setScale(&y, 5);
 s21_decimal z = {{0, 0, 0, 0}};
 s21_sub(x, y, &z);
-char res1[1000], res2[1000] = "0 0 0 0";  // ...
+char res1[1000], res2[1000] = "0 0 0 0";  // 0 0 1705032705 327680
 snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
 ck_assert_str_eq(res1, res2);
 }
@@ -548,7 +548,7 @@ s21_setScale(&x, 0);
 s21_setScale(&y, 0);
 s21_decimal z = {{0, 0, 0, 0}};
 s21_sub(x, y, &z);
-char res1[1000], res2[1000] = "0 0 0 0";  // ...
+char res1[1000], res2[1000] = "0 0 0 0";  // 0 0 1705032705 0
 snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
 ck_assert_str_eq(res1, res2);
 }
@@ -561,7 +561,7 @@ s21_setScale(&x, 28);
 s21_setScale(&y, 28);
 s21_decimal z = {{0, 0, 0, 0}};
 s21_sub(x, y, &z);
-char res1[1000], res2[1000] = "0 0 0 0";  // ...
+char res1[1000], res2[1000] = "0 0 0 0";  // 0 0 0 1835008
 snprintf(res1, sizeof(char)*1000, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
 ck_assert_str_eq(res1, res2);
 }
